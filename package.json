@@ -1,0 +1,44 @@
+{
+  "name": "typhonjs-github-inspect-orgs",
+  "version": "0.0.1",
+  "homepage": "https://github.com/typhonjs-node-scm/typhonjs-github-inspect-orgs/",
+  "description": "A NPM module providing compound GitHub queries for many-repo projects such as TyphonJS.",
+  "license": "MPL-2.0",
+  "author": {
+    "name": "Mike Leahy"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/typhonjs-node-scm/typhonjs-github-inspect-orgs/typhonjs-github-inspect-orgs.git"
+  },
+  "maintainers": [
+    {
+      "name": "Mike Leahy",
+      "email": "support@js.typhonrt.org"
+    }
+  ],
+  "dependencies": {
+    "bluebird": "^3.3.1",
+    "github": "^0.2.4"
+  },
+  "devDependencies": {
+    "fs-extra": "^0.26.5",
+    "gulp": "^3.9.1",
+    "typhonjs-config-eslint": "^0.2.1"
+  },
+  "keywords": [
+    "typhonjs",
+    "github",
+    "organizations",
+    "many",
+    "repos"
+  ],
+  "main": "src/GithubInspect.js",
+  "files": [
+    "src"
+  ],
+  "directories": {},
+  "bugs": {
+    "url": "https://github.com/typhonjs-node-scm/typhonjs-github-inspect-orgs/issues"
+  }
+}
