@@ -22,9 +22,14 @@
     "github": "^0.2.4"
   },
   "devDependencies": {
+    "chai": "^3.5.0",
+    "codecov.io": "^0.1.6",
     "fs-extra": "^0.26.5",
     "gulp": "^3.9.1",
-    "typhonjs-config-eslint": "^0.2.1"
+    "istanbul": "0.4.2",
+    "mocha": "^2.4.5",
+    "typhonjs-config-eslint": "^0.2.1",
+    "typhonjs-core-gulptasks": "^0.5.0"
   },
   "keywords": [
     "typhonjs",
@@ -33,6 +38,10 @@
     "many",
     "repos"
   ],
+  "scripts": {
+    "test": "node ./script/test.js",
+    "test-coverage": "node ./script/test.js --coverage"
+  },
   "main": "src/GithubInspect.js",
   "files": [
     "src"

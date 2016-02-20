@@ -7,7 +7,7 @@
 
 var sh = require('./sh');
 
-var mochaOption=" -t 10000 --recursive ./test/src -R spec";
+var mochaOption=" -t 120000 --recursive ./test/src -R spec";
 
 if (process.env.TRAVIS)
 {

@@ -1193,7 +1193,30 @@ GithubInspect.prototype.getRateLimit = function getRateLimit()
       github.misc.rateLimit({}, function(err, res)
       {
          if (err) { reject(err); }
-         else { resolve(res); }
+         else
+         {
+            var normalized = { scm: 'github', categories: 'ratelimits', ratelimits: [], timestamp: new Date() };
+
+            // Copy and convert rate limit reset timeouts to milliseconds; suitable for JS Date usage.
+            normalized.ratelimits.push(
+            {
+               core:
+               {
+                  limit: res.resources.core.limit,
+                  remaining: res.resources.core.remaining,
+                  reset: res.resources.core.reset * 1000
+               },
+
+               search:
+               {
+                  limit: res.resources.search.limit,
+                  remaining: res.resources.search.remaining,
+                  reset: res.resources.search.reset * 1000
+               }
+            });
+
+            resolve({ normalized: normalized, raw: res });
+         }
       });
    });
 };
@@ -1277,11 +1300,12 @@ function createNormalized(categories, raw)
    if (!Array.isArray(categories)) { throw new TypeError('createNormalized error: categories is not an `array`.'); }
    if (typeof raw !== 'object') { throw new TypeError('createNormalized error: raw is not an `object`.'); }
 
-//   var normalized = { scm: 'github', categories: categories.join(':'), timestamp: new Date() };
-
-   return deepNormalize(categories, raw, 0, { scm: 'github', categories: categories.join(':'), timestamp: new Date() });
-
-//   return normalized;
+   return depthNormalize(categories, raw, 0,
+   {
+      scm: 'github',
+      categories: categories.join(':'),
+      timestamp: new Date()
+   });
 }
 
 /**
@@ -1293,7 +1317,7 @@ function createNormalized(categories, raw)
  * @param root
  * @returns {{}}
  */
-function deepNormalize(categories, data, depth, root)
+function depthNormalize(categories, data, depth, root)
 {
    var category = categories[depth];
    var nextCategory = categories.length > depth ? categories[depth + 1] : undefined;
@@ -1310,7 +1334,7 @@ function deepNormalize(categories, data, depth, root)
 
       if (nextCategory && Array.isArray(data[cntr][nextCategory]))
       {
-         var nextResults = deepNormalize(categories, data[cntr][nextCategory], depth + 1);
+         var nextResults = depthNormalize(categories, data[cntr][nextCategory], depth + 1);
          results[nextCategory] = nextResults ? nextResults[nextCategory] : [];
       }
 
