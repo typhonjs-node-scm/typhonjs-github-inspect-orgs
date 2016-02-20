@@ -36,7 +36,7 @@ var githubInspect = new GithubInspect(
  *
  * Strips from data.normalized.orgs[].repos[] -> 'updated_at', 'pushed_at', 'stargazers_count', 'watchers_count'
  *
- * Strips from data.ratelimits[] -> 'limit', 'remaining', 'reset' fields.
+ * Strips from data.normalized.owners[].ratelimit[] -> 'limit', 'remaining', 'reset' fields.
  *
  * @param {object}   data - Normalized data to strip.
  */
@@ -47,40 +47,65 @@ function stripVariableData(data)
    // Strip any variable repo data from orgs.
    if (Array.isArray(data.orgs))
    {
-      for (var cntr = 0; cntr < data.orgs.length; cntr++)
+      stripVariableOrgs(data.orgs);
+   }
+
+   // Strip any owner / ratelimit data.
+   if (Array.isArray(data.owners))
+   {
+      for (var cntr = 0; cntr < data.owners.length; cntr++)
       {
-         var org = data.orgs[cntr];
+         var owner = data.owners[cntr];
 
-         // Strip 'updated_at', 'pushed_at', 'stargazers_count', 'watchers_count' fields as they may change.
-         if (Array.isArray(org.repos))
+         // Strip any variable repo data from orgs.
+         if (Array.isArray(owner.orgs))
          {
-            for (var cntr2 = 0; cntr2 < org.repos.length; cntr2++)
-            {
-               var repo = org.repos[cntr2];
+            stripVariableOrgs(owner.orgs);
+         }
 
-               delete repo['updated_at'];
-               delete repo['pushed_at'];
-               delete repo['stargazers_count'];
-               delete repo['watchers_count'];
+         if (Array.isArray(owner.ratelimit))
+         {
+            // Strip 'limit', 'remaining', 'reset' fields as they may change.
+            for (var cntr2 = 0; cntr2 < owner.ratelimit.length; cntr2++)
+            {
+               var ratelimit = owner.ratelimit[cntr2];
+
+               delete ratelimit.core['limit'];
+               delete ratelimit.core['remaining'];
+               delete ratelimit.core['reset'];
+
+               delete ratelimit.search['limit'];
+               delete ratelimit.search['remaining'];
+               delete ratelimit.search['reset'];
             }
          }
       }
    }
+}
 
-   if (Array.isArray(data.ratelimits))
+/**
+ * Strips variable repo data from an array of normalized organizations.
+ *
+ * @param {Array} orgs - Organizations to parse.
+ */
+function stripVariableOrgs(orgs)
+{
+   for (var cntr = 0; cntr < orgs.length; cntr++)
    {
-      // Strip 'limit', 'remaining', 'reset' fields as they may change.
-      for (cntr = 0; cntr < data.ratelimits.length; cntr++)
+      var org = orgs[cntr];
+
+      // Strip 'updated_at', 'pushed_at', 'stargazers_count', 'watchers_count' fields as they may change.
+      if (Array.isArray(org.repos))
       {
-         var ratelimit = data.ratelimits[cntr];
+         for (var cntr2 = 0; cntr2 < org.repos.length; cntr2++)
+         {
+            var repo = org.repos[cntr2];
 
-         delete ratelimit.core['limit'];
-         delete ratelimit.core['remaining'];
-         delete ratelimit.core['reset'];
-
-         delete ratelimit.search['limit'];
-         delete ratelimit.search['remaining'];
-         delete ratelimit.search['reset'];
+            delete repo['updated_at'];
+            delete repo['pushed_at'];
+            delete repo['stargazers_count'];
+            delete repo['watchers_count'];
+         }
       }
    }
 }
@@ -579,11 +604,11 @@ describe('Github Inspect', function()
    });
 
    /**
-    * Test `getRateLimit` without user credentials.
+    * Test `getOwnerOrgs`.
     */
-   it('github-get-rate-limit-all', function()
+   it('github-get-owner-orgs', function()
    {
-      return githubInspect.getRateLimit().then(function(data)
+      return githubInspect.getOwnerOrgs().then(function(data)
       {
          assert(typeof data === 'object');
          assert(typeof data.normalized === 'object');
@@ -592,7 +617,47 @@ describe('Github Inspect', function()
          // Delete any variable data.
          stripVariableData(data.normalized);
 
-         var jsonText = fs.readFileSync('./test/fixture/github-get-rate-limit.json').toString();
+         var jsonText = fs.readFileSync('./test/fixture/github-get-owner-orgs.json').toString();
+
+         assert(JSON.stringify(data.normalized) === jsonText);
+      });
+   });
+
+   /**
+    * Test `getOwners`.
+    */
+   it('github-get-owners', function()
+   {
+      return githubInspect.getOwners().then(function(data)
+      {
+         assert(typeof data === 'object');
+         assert(typeof data.normalized === 'object');
+         assert(typeof data.raw === 'object');
+
+         // Delete any variable data.
+         stripVariableData(data.normalized);
+
+         var jsonText = fs.readFileSync('./test/fixture/github-get-owners.json').toString();
+
+         assert(JSON.stringify(data.normalized) === jsonText);
+      });
+   });
+
+   /**
+    * Test `getOwnerRateLimits`.
+    */
+   it('github-get-owners-rate-limit', function()
+   {
+      return githubInspect.getOwnerRateLimits().then(function(data)
+      {
+         assert(typeof data === 'object');
+         assert(typeof data.normalized === 'object');
+         assert(typeof data.raw === 'object');
+
+         // Delete any variable data.
+         stripVariableData(data.normalized);
+
+         var jsonText = fs.readFileSync('./test/fixture/github-get-owners-rate-limit.json').toString();
 
          assert(JSON.stringify(data.normalized) === jsonText);
       });

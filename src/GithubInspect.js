@@ -3,10 +3,64 @@
  * users for many-repo projects such as TyphonJS. To support a many-repo / many-organization project that may span one
  * or more organizations and repos on GitHub this module provides compound queries resolved via chained Promises.
  *
+ * To configure GithubInspect pass in an options hash to the constructor:
+ * ```
+ * var GithubInspect  = require('typhonjs-github-inspect-orgs');
+ *
+ * var githubInspect = new GithubInspect(
+ * {
+ *     organizations: [{ credential: <GITHUB PUBLIC TOKEN>, owner: <GITHUB USER NAME FOR TOKEN>, regex: '^typhonjs' }],
+ * });
+ * ```
+ *
+ * `organizations` - Is an array of object hashes containing a public access token (credential), the associated owner
+ * name of the credential (owner) and a regular expression (regex) to scrape for all organizations from the owner
+ * account that match. More than one object hash may be provided in the `organizations` array and the combined found
+ * GitHub organizations will provide the group of organizations queried.
+ *
+ * Additional optional parameters to configure GithubInspect include:
+ * {boolean}   debug - Sets the Github API querying to debug / verbose mode; default (false)
+ * {string}    host - The API host; default ('api.github.com') only change for enterprise API host, etc.
+ * {string}    pathPrefix - Additional path for API end point; default ('').
+ * {number}    timeout - TLS / HTTPS time out for responses from GitHub; default (120000) seconds.
+ * {string}    `user-agent` - User agent string necessary for GitHub API; default ('typhonjs-github-inspect-orgs').
+ *
  * It should be noted that the main owner of the organization for a given team needs to have public access scope for
- * the team to be found. By default all private members (non-owners) are returned.
+ * the team to be found. It should be noted that all private members (non-owners) are returned.
  *
  *
+ *
+ *
+ * Please see `typhonjs-github-inspect-orgs-transform`
+ * (https://github.com/typhonjs-node-scm/typhonjs-github-inspect-orgs-transform) for a NPM module which transforms
+ * the normalized data returned by GithubInspect into `html`, `json`, `markdown` or `text`.
+ *
+ * All queries return an object hash with normalized data and the raw data returned from the GitHub API. These keys are
+ * `normalized` and `raw`.
+ *
+ * The normalized data contains a few base fields including:
+ * {string} scm - The source code management system used; default ('github').
+ * {string} categories - A string of categories separated by `:`. Each category corresponds to a nested array in the
+ *                       JSON object. One can split this category key to provide a way to walk through the JSON object.
+ * {string} timestamp - The time the normalized JSON object was generated.
+ *
+ * The remaining base fields include one or more array of array stuctures depending on the requested data.
+ *
+ * All user data (collaborator, contributor, member) provides the following fields (Example from `getCollaborators`):
+ *
+ * {
+ *    "scm": "github",
+ *    "categories": "collaborators",
+ *    "timestamp": "2016-02-20T04:56:03.792Z",
+ *    "collaborators": [
+ *      {
+ *        "name": "typhonrt",
+ *        "id": 311473,
+ *        "url": "https:\/\/github.com\/typhonrt",
+ *        "avatar_url": "https:\/\/avatars.githubusercontent.com\/u\/311473?v=3"
+ *      }
+ *    ]
+ * }
  */
 
 var GitHubAPI =   require('github');
@@ -30,8 +84,6 @@ var s_STAT_CATEGORY_TO_FUNCT = {
  * @param {object}   options - Defines an object hash of required and optional parameters including the following:
  * ```
  * (Array<object>)   organizations - An array of object hashes containing `owner` and `regex` strings.
- * (string)          userCredential - The main credentialed GitHub public access token that must at least have
- *                                    (public_repo, read:org) permissions.
  *
  * (boolean)   debug - (optional) Sets GitHub API to debug mode; default (false).
  * (string)    host - (optional) Sets the GitHub API host; default (api.github.com).
@@ -80,8 +132,6 @@ function GithubInspect(options)
 
       organization.regex = new RegExp(organization.regex);
    }
-
-   this.userCredential = this.createCredentials(options.userCredential);
 
    this.githubAPI = new GitHubAPI(
    {
@@ -364,7 +414,7 @@ GithubInspect.prototype.getOrgs = function getOrgs(options)
 {
    options = options || {};
 
-   if (typeof options !== 'object') { throw new TypeError('getOrgsAuth error: options is not an `object`.'); }
+   if (typeof options !== 'object') { throw new TypeError('getOrgs error: options is not an `object`.'); }
 
    var self = this;
 
@@ -384,9 +434,9 @@ GithubInspect.prototype.getOrgs = function getOrgs(options)
       {
          (function(organization)
          {
-            var orgCredential = organization.credential || self.userCredential;
+            var orgCredential = organization.credential;
 
-            promises.push(new Promise(function(resolve)
+            promises.push(new Promise(function(resolve, reject)
             {
                var github = self.authenticate(orgCredential);
 
@@ -394,7 +444,7 @@ GithubInspect.prototype.getOrgs = function getOrgs(options)
                {
                   if (err)
                   {
-                     resolve();
+                     reject(err);
                   }
                   else
                   {
@@ -1180,45 +1230,128 @@ GithubInspect.prototype.getOrgTeamMembers = function getOrgTeamMembers(options)
 };
 
 /**
+ * Returns all organizations by owner.
+ *
+ * @returns {Promise}
+ */
+GithubInspect.prototype.getOwnerOrgs = function getOwnerOrgs()
+{
+   var self = this;
+
+   // Fail early if rate limit is reached or user authentication fails.
+   return this.isRateLimitReached().then(function()
+   {
+      var promises = [];
+      var owners = [];
+
+      for (var cntr = 0; cntr < self.organizations.length; cntr++)
+      {
+         (function(organization)
+         {
+            var orgCredential = organization.credential;
+
+            promises.push(new Promise(function(resolve, reject)
+            {
+               var github = self.authenticate(orgCredential);
+
+               github.orgs.getFromUser({ user: organization.owner }, function(err, orgs)
+               {
+                  if (err)
+                  {
+                     reject(err);
+                  }
+                  else
+                  {
+                     var results = [];
+
+                     // Only add organizations that pass the `regex` test.
+                     for (var cntr2 = 0; cntr2 < orgs.length; cntr2++)
+                     {
+                        var org = orgs[cntr2];
+                        if (typeof org.login === 'string' && organization.regex.test(org.login)) { results.push(org); }
+                     }
+
+                     // Sort by org name.
+                     results.sort(function(a, b) { return a.login.localeCompare(b.login); });
+
+                     owners.push({ owner: organization.owner, orgs: results });
+
+                     resolve();
+                  }
+               });
+            }));
+         })(self.organizations[cntr]);
+      }
+
+      return Promise.all(promises).then(function()
+      {
+         // Sort by owner name.
+         owners.sort(function(a, b) { return a.owner.localeCompare(b.owner); });
+
+         return { normalized: createNormalized(['owners', 'orgs'], owners), raw: owners };
+      });
+   });
+};
+
+/**
  * Returns a given GitHub user from the provided credentials.
  *
  * @returns {Promise} -- Always resolves; if authentication fails null is returned otherwise user JSON.
  */
-GithubInspect.prototype.getRateLimit = function getRateLimit()
+GithubInspect.prototype.getOwnerRateLimits = function getOwnerRateLimits(options)
 {
-   var github = this.authenticate(this.userCredential);
+   options = options || {};
 
-   return new Promise(function(resolve, reject)
+   if (typeof options !== 'object') { throw new TypeError('getRateLimit error: options is not an `object`.'); }
+
+   var self = this;
+
+   var owners = [];
+   var promises = [];
+
+   for (var cntr = 0; cntr < self.organizations.length; cntr++)
    {
-      github.misc.rateLimit({}, function(err, res)
+      var organization = self.organizations[cntr];
+
+      (function(organization)
       {
-         if (err) { reject(err); }
-         else
+         promises.push(new Promise(function(resolve, reject)
          {
-            var normalized = { scm: 'github', categories: 'ratelimits', ratelimits: [], timestamp: new Date() };
-
-            // Copy and convert rate limit reset timeouts to milliseconds; suitable for JS Date usage.
-            normalized.ratelimits.push(
+            var github = self.authenticate(organization.credential);
+            github.misc.rateLimit({}, function(err, result)
             {
-               core:
+               if (err) { reject(err); }
+               else
                {
-                  limit: res.resources.core.limit,
-                  remaining: res.resources.core.remaining,
-                  reset: res.resources.core.reset * 1000
-               },
-
-               search:
-               {
-                  limit: res.resources.search.limit,
-                  remaining: res.resources.search.remaining,
-                  reset: res.resources.search.reset * 1000
+                  owners.push({ owner: organization.owner, ratelimit: [result] });
+                  resolve();
                }
             });
+         }));
+      })(organization);
+   }
 
-            resolve({ normalized: normalized, raw: res });
-         }
-      });
+   return Promise.all(promises).then(function()
+   {
+      // Sort by owner name.
+      owners.sort(function(a, b) { return a.owner.localeCompare(b.owner); });
+
+      return { normalized: createNormalized(['owners', 'ratelimit'], owners), raw: owners };
    });
+};
+
+/**
+ * Returns all organization owners
+ *
+ * @returns {Promise} --
+ */
+GithubInspect.prototype.getOwners = function getOwners()
+{
+   var normalized = createNormalized(['owners'], this.organizations);
+
+   normalized.owners.sort(function(a, b) { return a.name.localeCompare(b.name); });
+
+   return Promise.resolve({ normalized: normalized, raw: normalized });
 };
 
 /**
@@ -1265,31 +1398,43 @@ GithubInspect.prototype.isRateLimitReached = function isRateLimitReached(options
 
    return new Promise(function(resolve, reject)
    {
-      var github = self.authenticate(self.userCredential);
-      github.misc.rateLimit({}, function(err, res)
+      var promises = [];
+
+      for (var cntr = 0; cntr < self.organizations.length; cntr++)
       {
-         if (err)
-         {
-            reject('isRateLimitReached: unknown error - ' + err);
-         }
-         else
-         {
-            var remaining = 0;
+         var organization = self.organizations[cntr];
 
-            if (typeof res === 'object' && res.resources && res.resources.core && res.resources.core.remaining)
+         (function(organization)
+         {
+            promises.push(new Promise(function(innerResolve)
             {
-               remaining = res.resources.core.remaining;
-               if (remaining <= 0)
+               var github = self.authenticate(organization.credential);
+               github.misc.rateLimit({}, function(err, res)
                {
-                  reject('GitHub API rate limit reached; please try again at: '
-                   + new Date(res.resources.core.reset * 1000));
-               }
-            }
+                  if (err) { reject('isRateLimitReached: unknown error - ' + err); }
+                  else
+                  {
+                     if (typeof res === 'object' && res.resources && res.resources.core && res.resources.core.remaining)
+                     {
+                        var remaining = res.resources.core.remaining;
+                        if (remaining <= 0)
+                        {
+                           reject('GitHub API rate limit reached for organization owner: `' + organization.owner
+                            + '`; please try again at: ' + new Date(res.resources.core.reset * 1000));
+                        }
+                     }
 
-            options.skipRateLimitCheck = true;
+                     innerResolve();
+                  }
+               });
+            }));
+         })(organization);
+      }
 
-            resolve(remaining);
-         }
+      return Promise.all(promises).then(function()
+      {
+         options.skipRateLimitCheck = true;
+         resolve(false);
       });
    });
 };
@@ -1360,6 +1505,14 @@ function getNormalizeFunction(category)
          sortFunction = normalizeOrg;
          break;
 
+      case 'owners':
+         sortFunction = normalizeOwner;
+         break;
+
+      case 'ratelimit':
+         sortFunction = normalizeRateLimit;
+         break;
+
       case 'repos':
          sortFunction = normalizeRepo;
          break;
@@ -1393,6 +1546,45 @@ function normalizeOrg(org)
       url: 'https://github.com/' + org.login,
       avatar_url: org.avatar_url ? org.avatar_url : '',
       description: org.description ? org.description : ''
+   };
+}
+
+/**
+ * Returns a normalized version of a owner from the organizations configuration data.
+ *
+ * @param {object}   owner - Organization owner to parse.
+ * @returns {{name: string}}
+ */
+function normalizeOwner(owner)
+{
+   var ownerName = owner.owner ? owner.owner : '';
+
+   return { name: ownerName, url: 'https://github.com/' + ownerName };
+}
+
+/**
+ * Returns a normalized version of a GitHub rate limit API response. The reset time is converted to milliseconds to
+ * be compatible with JS Date usage.
+ *
+ * @param {object}   ratelimit - GitHub rate limit to parse.
+ * @returns {{core: {limit: number, remaining: number, reset: number}, search: {limit: number, remaining: number, reset: number}}}
+ */
+function normalizeRateLimit(ratelimit)
+{
+   return {
+      core:
+      {
+         limit: ratelimit.resources.core.limit,
+         remaining: ratelimit.resources.core.remaining,
+         reset: ratelimit.resources.core.reset * 1000
+      },
+
+      search:
+      {
+         limit: ratelimit.resources.search.limit,
+         remaining: ratelimit.resources.search.remaining,
+         reset: ratelimit.resources.search.reset * 1000
+      }
    };
 }
 
