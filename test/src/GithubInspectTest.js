@@ -38,7 +38,7 @@ var githubInspect = new GithubInspect(
  *
  * Strips from data.ratelimits[] -> 'limit', 'remaining', 'reset' fields.
  *
- * @param {object}   data
+ * @param {object}   data - Normalized data to strip.
  */
 function stripVariableData(data)
 {

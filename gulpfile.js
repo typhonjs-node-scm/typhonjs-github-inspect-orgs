@@ -9,6 +9,6 @@ var gulp = require('gulp');
 require('typhonjs-core-gulptasks')(gulp,
 {
    rootPath: __dirname,
-   importTasks: ['esdoc', 'eslint', 'npm'],
+   importTasks: ['eslint', 'npm'],
    srcGlob: ['./src/**/*.js', './test/src/**/*.js']
 });

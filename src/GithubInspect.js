@@ -364,7 +364,7 @@ GithubInspect.prototype.getOrgs = function getOrgs(options)
 {
    options = options || {};
 
-   if (typeof options !== 'object') { throw new TypeError('getOrgsAuth error: options is not an `object`.') }
+   if (typeof options !== 'object') { throw new TypeError('getOrgsAuth error: options is not an `object`.'); }
 
    var self = this;
 
@@ -442,11 +442,11 @@ GithubInspect.prototype.getOrgsAuth = function getOrgsAuth(options)
 {
    options = options || {};
 
-   if (typeof options !== 'object') { throw new TypeError('getOrgsAuth error: options is not an `object`.') }
+   if (typeof options !== 'object') { throw new TypeError('getOrgsAuth error: options is not an `object`.'); }
 
    if (typeof options.credentials !== 'string')
    {
-      throw new TypeError('getOrgsAuth error: options.credentials is required or is not a `string`.')
+      throw new TypeError('getOrgsAuth error: options.credentials is required or is not a `string`.');
    }
 
    // If no explicit option to create normalized data is available default to true.
@@ -485,7 +485,7 @@ GithubInspect.prototype.getOrgsAuth = function getOrgsAuth(options)
                         {
                            github.orgs.getMember({ org: org.login, user: user.login }, function(err)
                            {
-                              if (err) {}
+                              if (err) { /* .. */ }
                               else
                               {
                                  org.auth_user = user;
@@ -578,7 +578,7 @@ GithubInspect.prototype.getOrgRepos = function getOrgRepos(options)
 {
    options = options || {};
 
-   if (typeof options !== 'object') { throw new TypeError('getOrgRepos error: options is not an `object`.') }
+   if (typeof options !== 'object') { throw new TypeError('getOrgRepos error: options is not an `object`.'); }
 
    // If no explicit option to create normalized data is available default to true.
    var normalize = typeof options.normalize === 'boolean' ? options.normalize : true;
@@ -616,7 +616,7 @@ GithubInspect.prototype.getOrgRepos = function getOrgRepos(options)
                      else
                      {
                         // Sort by org name.
-                        repos.sort(function (a, b) { return a.name.localeCompare(b.name); });
+                        repos.sort(function(a, b) { return a.name.localeCompare(b.name); });
 
                         org.repos = repos;
                         resolve(repos);
@@ -722,7 +722,7 @@ GithubInspect.prototype.getOrgRepoCollaborators = function getOrgRepoCollaborato
 
    if (typeof options !== 'object')
    {
-      throw new TypeError('getOrgRepoCollaborators error: options is not an `object`.')
+      throw new TypeError('getOrgRepoCollaborators error: options is not an `object`.');
    }
 
    // If no explicit option to create normalized data is available default to true.
@@ -796,7 +796,7 @@ GithubInspect.prototype.getOrgRepoContributors = function getOrgRepoContributors
 
    if (typeof options !== 'object')
    {
-      throw new TypeError('getOrgRepoContributors error: options is not an `object`.')
+      throw new TypeError('getOrgRepoContributors error: options is not an `object`.');
    }
 
    // If no explicit option to create normalized data is available default to true.
@@ -972,7 +972,7 @@ GithubInspect.prototype.getOrgTeams = function getOrgTeams(options)
 {
    options = options || {};
 
-   if (typeof options !== 'object') { throw new TypeError('getOrgTeams error: options is not an `object`.') }
+   if (typeof options !== 'object') { throw new TypeError('getOrgTeams error: options is not an `object`.'); }
 
    // If no explicit option to create normalized data is available default to true.
    var normalize = typeof options.normalize === 'boolean' ? options.normalize : true;
@@ -1034,7 +1034,7 @@ GithubInspect.prototype.getOrgTeamsAuth = function getOrgTeamsAuth(options)
 {
    options = options || {};
 
-   if (typeof options !== 'object') { throw new TypeError('getOrgTeamsAuth error: options is not an `object`.') }
+   if (typeof options !== 'object') { throw new TypeError('getOrgTeamsAuth error: options is not an `object`.'); }
 
    // If no explicit option to create normalized data is available default to true.
    var normalize = typeof options.normalize === 'boolean' ? options.normalize : true;
@@ -1109,7 +1109,7 @@ GithubInspect.prototype.getOrgTeamsAuth = function getOrgTeamsAuth(options)
                // Sort by team name.
                for (var cntr = 0; cntr < orgs.length; cntr++)
                {
-                  orgs[cntr].teams.sort(function (a, b) { return a.name.localeCompare(b.name); });
+                  orgs[cntr].teams.sort(function(a, b) { return a.name.localeCompare(b.name); });
                }
 
                return normalize ? { normalized: createNormalized(['orgs', 'teams'], orgs), raw: orgs } : orgs;
@@ -1232,7 +1232,7 @@ GithubInspect.prototype.getUser = function getUser(credentials)
 {
    if (typeof credentials === 'object') { credentials = credentials.credentials; }
 
-   if (typeof credentials !== 'string') { throw new TypeError('getUser error: credentials is not a `string`.')}
+   if (typeof credentials !== 'string') { throw new TypeError('getUser error: credentials is not a `string`.'); }
 
    var self = this;
 
@@ -1270,7 +1270,7 @@ GithubInspect.prototype.isRateLimitReached = function isRateLimitReached(options
       {
          if (err)
          {
-            reject('isRateLimitReached: unknown error - ' +err);
+            reject('isRateLimitReached: unknown error - ' + err);
          }
          else
          {
