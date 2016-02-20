@@ -6,7 +6,7 @@ var GithubInspect =  require('../../src/GithubInspect');
 // This is the testing account public access token of typhonjs-test GitHub account. The associated organizations are:
 // https://github.com/test-org-typhonjs
 // https://github.com/test-org-typhonjs2
-var userCredential = '579911b3593514b9445d0d1d5f84c3002d861c14';
+var userCredential = '98e8c89e9ebaa1bd2689c745ee764f9b914d7d8f';
 
 var githubInspect = new GithubInspect(
 {
