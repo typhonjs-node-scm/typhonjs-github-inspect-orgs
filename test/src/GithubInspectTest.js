@@ -4,7 +4,8 @@ var fs =             require('fs-extra');
 var GithubInspect =  require('../../src/GithubInspect');
 
 // Loads a public access token from environment variable or from public.token in the root directory.
-// This is the testing account public access token of typhonjs-test GitHub account. The associated organizations are:
+// For Travis CI this is the testing account public access token of typhonjs-test GitHub account. The associated
+// organizations are:
 // https://github.com/test-org-typhonjs
 // https://github.com/test-org-typhonjs2
 
@@ -25,8 +26,7 @@ if (typeof userCredential !== 'string')
 
 var githubInspect = new GithubInspect(
 {
-   organizations: [{ credential: userCredential, owner: 'typhonjs-test', regex: 'test' }],
-   userCredential: userCredential
+   organizations: [{ credential: userCredential, owner: 'typhonjs-test', regex: 'test' }]
 });
 
 /**
