@@ -3,10 +3,25 @@ var fs =             require('fs-extra');
 
 var GithubInspect =  require('../../src/GithubInspect');
 
+// Loads a public access token from environment variable or from public.token in the root directory.
 // This is the testing account public access token of typhonjs-test GitHub account. The associated organizations are:
 // https://github.com/test-org-typhonjs
 // https://github.com/test-org-typhonjs2
-var userCredential = '98e8c89e9ebaa1bd2689c745ee764f9b914d7d8f';
+
+var userCredential = process.env.GITHUB_TOKEN;
+
+// If user credential is still undefined attempt to load from a local file in the root directory `./public.token`.
+if (typeof userCredential === 'undefined' && fs.existsSync('./public.token'))
+{
+   userCredential = fs.readFileSync('./public.token').toString();
+}
+
+// Fail now if we don't have a token.
+
+if (typeof userCredential !== 'string')
+{
+   throw new TypeError('No user credentials found in `process.env.GITHUB_TOKEN` or `./public.token`.');
+}
 
 var githubInspect = new GithubInspect(
 {
