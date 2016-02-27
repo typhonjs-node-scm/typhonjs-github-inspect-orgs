@@ -44,7 +44,8 @@
   "main": "dist/GitHubInspectOrgs.js",
   "files": [
     "dist",
-    "src"
+    "src",
+    "AUTHORS.md"
   ],
   "directories": {},
   "bugs": {
