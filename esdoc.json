@@ -1,0 +1,6 @@
+{
+   "title": "typhonjs-github-inspect-orgs",
+   "source": "src",
+   "destination": "docs",
+   "manual": { "changelog": ["./CHANGELOG.md"] }
+}
