@@ -240,7 +240,8 @@ export default class GitHubInspectOrgs
     *        "id": 311473,
     *        "url": "https:\/\/github.com\/typhonrt",
     *        "avatar_url": "https:\/\/avatars.githubusercontent.com\/u\/311473?v=3"
-    *      }
+    *      },
+    *      // .... more data
     *    ]
     * }
     * ```
@@ -319,7 +320,8 @@ export default class GitHubInspectOrgs
     *        "id": 311473,
     *        "url": "https:\/\/github.com\/typhonrt",
     *        "avatar_url": "https:\/\/avatars.githubusercontent.com\/u\/311473?v=3"
-    *      }
+    *      },
+    *      // .... more data
     *    ]
     * }
     * ```
@@ -399,7 +401,8 @@ export default class GitHubInspectOrgs
     *        "id": 311473,
     *        "url": "https:\/\/github.com\/typhonrt",
     *        "avatar_url": "https:\/\/avatars.githubusercontent.com\/u\/311473?v=3"
-    *      }
+    *      },
+    *      // .... more data
     *    ]
     * }
     * ```
@@ -478,9 +481,11 @@ export default class GitHubInspectOrgs
     *            "id": 17188714,
     *            "url": "https:\/\/github.com\/typhonjs-test",
     *            "avatar_url": "https:\/\/avatars.githubusercontent.com\/u\/17188714?v=3"
-    *          }
+    *          },
+    *          // .... more data
     *        ]
-    *      }
+    *      },
+    *      // .... more data
     *    ]
     * }
     * ```
@@ -589,9 +594,11 @@ export default class GitHubInspectOrgs
     *            "ssh_url": "git@github.com:test-org-typhonjs\/test-repo1.git",
     *            "clone_url": "https:\/\/github.com\/test-org-typhonjs\/test-repo1.git",
     *            "default_branch": "master"
-    *          }
+    *          },
+    *          // .... more data
     *        ]
-    *      }
+    *      },
+    *      // .... more data
     *    ]
     * }
     * ```
@@ -718,11 +725,14 @@ export default class GitHubInspectOrgs
     *                "id": 17188714,
     *                "url": "https:\/\/github.com\/typhonjs-test",
     *                "avatar_url": "https:\/\/avatars.githubusercontent.com\/u\/17188714?v=3"
-    *              }
+    *              },
+    *              // .... more data
     *            ]
-    *          }
+    *          },
+    *          // .... more data
     *        ]
-    *      }
+    *      },
+    *      // .... more data
     *    ]
     * }
     * ```
@@ -848,11 +858,14 @@ export default class GitHubInspectOrgs
     *                "id": 17188714,
     *                "url": "https:\/\/github.com\/typhonjs-test",
     *                "avatar_url": "https:\/\/avatars.githubusercontent.com\/u\/17188714?v=3"
-    *              }
+    *              },
+    *              // .... more data
     *            ]
-    *          }
+    *          },
+    *          // .... more data
     *        ]
-    *      }
+    *      },
+    *      // .... more data
     *    ]
     * }
     * ```
@@ -1175,7 +1188,8 @@ export default class GitHubInspectOrgs
     *        "url": "https:\/\/github.com\/test-org-typhonjs",
     *        "avatar_url": "https:\/\/avatars.githubusercontent.com\/u\/17228306?v=3",
     *        "description": "Just a test organization for testing typhonjs-github-inspect-orgs"
-    *      }
+    *      },
+    *      // .... more data
     *    ]
     * }
     * ```
@@ -1276,9 +1290,11 @@ export default class GitHubInspectOrgs
     *            "privacy": "closed",
     *            "permission": "pull",
     *            "description": ""
-    *          }
+    *          },
+    *          // .... more data
     *        ]
     *      },
+    *      // .... more data
     *    ]
     * }
     * ```
@@ -1381,11 +1397,14 @@ export default class GitHubInspectOrgs
     *                "id": 17188714,
     *                "url": "https:\/\/github.com\/typhonjs-test",
     *                "avatar_url": "https:\/\/avatars.githubusercontent.com\/u\/17188714?v=3"
-    *              }
+    *              },
+    *              // .... more data
     *            ]
-    *          }
+    *          },
+    *          // .... more data
     *        ]
-    *      }
+    *      },
+    *      // .... more data
     *    ]
     * }
     * ```
@@ -1474,7 +1493,8 @@ export default class GitHubInspectOrgs
     *          },
     *          // more data...
     *        ]
-    *      }
+    *      },
+    *      // .... more data
     *    ]
     * }
     * ```
@@ -1568,7 +1588,8 @@ export default class GitHubInspectOrgs
     *            }
     *          }
     *        ]
-    *      }
+    *      },
+    *      // .... more data
     *    ]
     * }
     * ```
@@ -1627,7 +1648,8 @@ export default class GitHubInspectOrgs
     *      {
     *        "name": "typhonjs-test",
     *        "url": "https:\/\/github.com\/typhonjs-test"
-    *      }
+    *      },
+    *      // .... more data
     *    ]
     * }
     * ```
@@ -1766,14 +1788,20 @@ const s_CREATE_CREDENTIALS = (tokenOrPass) =>
  */
 const s_CREATE_REPO_FILE_PROMISES = (userAgent, promises, repos, options = {}) =>
 {
-   if (typeof userAgent !== 'object')
-   {
-      throw new TypeError(`s_CREATE_REPO_FILE_PROMISES error: 'userAgent' is not an 'object'.`);
-   }
-
    if (typeof options !== 'object')
    {
       throw new TypeError(`s_CREATE_REPO_FILE_PROMISES error: 'options' is not an 'object'.`);
+   }
+
+   // If there are no files to process exit early.
+   if (typeof options.repoFiles === 'undefined')
+   {
+      return;
+   }
+
+   if (typeof userAgent !== 'object')
+   {
+      throw new TypeError(`s_CREATE_REPO_FILE_PROMISES error: 'userAgent' is not an 'object'.`);
    }
 
    if (!Array.isArray(promises))
@@ -1784,11 +1812,6 @@ const s_CREATE_REPO_FILE_PROMISES = (userAgent, promises, repos, options = {}) =
    if (!Array.isArray(repos))
    {
       throw new TypeError(`s_CREATE_REPO_FILE_PROMISES error: 'repos' is not an 'array'.`);
-   }
-
-   if (typeof options.repoFiles === 'undefined')
-   {
-      return;
    }
 
    if (!Array.isArray(options.repoFiles))
@@ -1829,72 +1852,6 @@ const s_CREATE_REPO_FILE_PROMISES = (userAgent, promises, repos, options = {}) =
          })(repo, filePath);
       }
    }
-};
-
-/**
- * Returns false if the rate limit for GitHub API access is not reached. If exceeded then the promise is rejected.
- *
- * @param {GitHubInspectOrgs} githubInspect - An instance of GitHubInspectOrgs.
- * @param {object}            options - Optional parameters.
- *
- * @returns {Promise}
- */
-const s_IS_RATE_LIMIT_REACHED = (githubInspect, options = {}) =>
-{
-   if (typeof options !== 'object')
-   {
-      throw new TypeError(`s_IS_RATE_LIMIT_REACHED error: options is not an 'object'.`);
-   }
-
-   // Early out if `skipRateLimitCheck` is set.
-   if (typeof options.skipRateLimitCheck === 'boolean' && options.skipRateLimitCheck)
-   {
-      return Promise.resolve(false);
-   }
-
-   return new Promise((resolve, reject) =>
-   {
-      const promises = [];
-
-      for (let cntr = 0; cntr < githubInspect._organizations.length; cntr++)
-      {
-         const organization = githubInspect._organizations[cntr];
-
-         (function(organization)
-         {
-            promises.push(new Promise((innerResolve) =>
-            {
-               const github = s_AUTHENTICATE(githubInspect._githubAPI, organization.credential);
-
-               github.misc.rateLimit({}, (err, res) =>
-               {
-                  if (err) { reject(`s_IS_RATE_LIMIT_REACHED: unknown error - ${err}`); }
-                  else
-                  {
-                     if (typeof res === 'object' && res.resources && res.resources.core &&
-                      res.resources.core.remaining)
-                     {
-                        const remaining = res.resources.core.remaining;
-                        if (remaining <= 0)
-                        {
-                           reject(`GitHub API rate limit reached for organization owner: '${organization.owner}
-                               '; please try again at: '${new Date(res.resources.core.reset * 1000)}.`);
-                        }
-                     }
-
-                     innerResolve();
-                  }
-               });
-            }));
-         })(organization);
-      }
-
-      return Promise.all(promises).then(() =>
-      {
-         options.skipRateLimitCheck = true;
-         resolve(false);
-      });
-   });
 };
 
 /**
@@ -2186,6 +2143,72 @@ const s_GET_USER = (githubInspect, credential) =>
       {
          if (err) { resolve(null); }
          else { resolve(res); }
+      });
+   });
+};
+
+/**
+ * Returns false if the rate limit for GitHub API access is not reached. If exceeded then the promise is rejected.
+ *
+ * @param {GitHubInspectOrgs} githubInspect - An instance of GitHubInspectOrgs.
+ * @param {object}            options - Optional parameters.
+ *
+ * @returns {Promise}
+ */
+const s_IS_RATE_LIMIT_REACHED = (githubInspect, options = {}) =>
+{
+   if (typeof options !== 'object')
+   {
+      throw new TypeError(`s_IS_RATE_LIMIT_REACHED error: options is not an 'object'.`);
+   }
+
+   // Early out if `skipRateLimitCheck` is set.
+   if (typeof options.skipRateLimitCheck === 'boolean' && options.skipRateLimitCheck)
+   {
+      return Promise.resolve(false);
+   }
+
+   return new Promise((resolve, reject) =>
+   {
+      const promises = [];
+
+      for (let cntr = 0; cntr < githubInspect._organizations.length; cntr++)
+      {
+         const organization = githubInspect._organizations[cntr];
+
+         (function(organization)
+         {
+            promises.push(new Promise((innerResolve) =>
+            {
+               const github = s_AUTHENTICATE(githubInspect._githubAPI, organization.credential);
+
+               github.misc.rateLimit({}, (err, res) =>
+               {
+                  if (err) { reject(`s_IS_RATE_LIMIT_REACHED: unknown error - ${err}`); }
+                  else
+                  {
+                     if (typeof res === 'object' && res.resources && res.resources.core &&
+                      res.resources.core.remaining)
+                     {
+                        const remaining = res.resources.core.remaining;
+                        if (remaining <= 0)
+                        {
+                           reject(`GitHub API rate limit reached for organization owner: '${organization.owner}
+                               '; please try again at: '${new Date(res.resources.core.reset * 1000)}.`);
+                        }
+                     }
+
+                     innerResolve();
+                  }
+               });
+            }));
+         })(organization);
+      }
+
+      return Promise.all(promises).then(() =>
+      {
+         options.skipRateLimitCheck = true;
+         resolve(false);
       });
    });
 };
