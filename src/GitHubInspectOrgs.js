@@ -647,7 +647,7 @@ export default class GitHubInspectOrgs
                         }
                         else
                         {
-                           // Sort by org name.
+                           // Sort by repo name.
                            repos.sort((a, b) => { return a.name.localeCompare(b.name); });
 
                            org.repos = repos;
@@ -1933,6 +1933,9 @@ const s_GET_ORG_REPOS_AUTH = (githubInspect, options = {}) =>
 
             for (let cntr = 0; cntr < orgs.length; cntr++)
             {
+               // Sort by repo name.
+               orgs[cntr].repos.sort((a, b) => { return a.name.localeCompare(b.name); });
+
                // Processes any file download requests from options.repoFiles
                s_CREATE_REPO_FILE_PROMISES(githubInspect._userAgent, innerPromises, orgs[cntr].repos, options);
             }
