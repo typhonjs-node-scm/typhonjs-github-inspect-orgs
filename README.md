@@ -6,7 +6,7 @@
 [![Gitter](https://img.shields.io/gitter/room/typhonjs/TyphonJS.svg)](https://gitter.im/typhonjs/TyphonJS)
 
 [![Build Status](https://travis-ci.org/typhonjs-node-scm/typhonjs-github-inspect-orgs.svg?branch=master)](https://travis-ci.org/typhonjs-node-scm/typhonjs-github-inspect-orgs)
-[![Codecov](https://img.shields.io/codecov/c/github/typhonjs-node-scm/typhonjs-github-inspect-orgs.svg)](https://codecov.io/github/typhonjs-node-scm/typhonjs-github-inspect-orgs)
+[![Coverage](https://img.shields.io/codecov/c/github/typhonjs-node-scm/typhonjs-github-inspect-orgs.svg)](https://codecov.io/github/typhonjs-node-scm/typhonjs-github-inspect-orgs)
 [![Dependency Status](https://www.versioneye.com/user/projects/56d1a9d1157a690037bbb70f/badge.svg?style=flat)](https://www.versioneye.com/user/projects/56d1a9d1157a690037bbb70f)
 
 A NPM module providing compound GitHub queries spanning multiple organizations /
