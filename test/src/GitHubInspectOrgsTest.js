@@ -131,7 +131,7 @@ describe('GitHubInspectOrgs', () =>
          // Delete any variable data.
          s_STRIP_VARIABLE_DATA(data.normalized);
 
-         const jsonText = fs.readFileSync('./test/fixture/github-get-contributors-all.json', 'utf-8');
+         const jsonText = fs.readFileSync('./test/fixture/github-get-contributors-user.json', 'utf-8');
 
          assert(JSON.stringify(data.normalized) === jsonText);
       });
