@@ -108,16 +108,16 @@ GitHubInspectOrgs method summary:
 - [getCollaborators](#getCollaborators) - Returns all collaborators across all organizations.
 - [getContributors](#getContributors) - Returns all contributors across all organizations.
 - [getMembers](#getMembers) - Returns all organization members across all organizations.
-- [getOrgMembers](#getOrgMembers)
-- [getOrgRepos](#getOrgRepos)
-- [getOrgRepoCollaborators](#getOrgRepoCollaborators)
-- [getOrgRepoContributors](#getOrgRepoContributors)
-- [getOrgRepoStats](#getOrgRepoStats)
-- [getOrgs](#getOrgs)
-- [getOrgTeams](#getOrgTeams)
-- [getOwnerOrgs](#getOwnerOrgs)
-- [getOwnerRateLimits](#getOwnerRateLimits)
-- [getOwners](#getOwners)
+- [getOrgMembers](#getOrgMembers) - Returns all members by organization across all organizations.
+- [getOrgRepos](#getOrgRepos) - Returns all repos by organization across all organizations.
+- [getOrgRepoCollaborators](#getOrgRepoCollaborators) - Returns all collaborators by repo by organization across all organizations.
+- [getOrgRepoContributors](#getOrgRepoContributors) - Returns all contributors by repo by organization across all organizations.
+- [getOrgRepoStats](#getOrgRepoStats) - Returns GitHub statistics by repo by organization across all organizations.
+- [getOrgs](#getOrgs) - Returns all organizations.
+- [getOrgTeams](#getOrgTeams) - Returns all teams by organization across all organizations.
+- [getOwnerOrgs](#getOwnerOrgs) - Returns all organizations by organization owner.
+- [getOwnerRateLimits](#getOwnerRateLimits) - Returns the current rate limits for all organization owners.
+- [getOwners](#getOwners) - Returns all organization owners.
 
 -----------
 <a name="getCollaborators"></a>
