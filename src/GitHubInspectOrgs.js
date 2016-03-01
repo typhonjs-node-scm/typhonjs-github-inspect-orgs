@@ -47,6 +47,14 @@ import createNormalized from './createNormalized';
  * {string}    `user-agent` - User agent string necessary for GitHub API; default ('typhonjs-github-inspect-orgs').
  * ```
  *
+ * To query all TyphonJS organizations use the following configuration:
+ * ```
+ * const githubInspect = new GitHubInspectOrgs(
+ * {
+ *    organizations: [{ credential: <ANY_GITHUB_PUBLIC_TOKEN>, owner: 'typhonrt', regex: '^typhonjs' }]
+ * });
+ * ```
+ *
  * It should be noted that the main owner of the organization for a given team needs to have public access scope for
  * the team to be found. It should be noted that all private members (non-owners) are returned.
  *
@@ -91,14 +99,6 @@ import createNormalized from './createNormalized';
  * const githubInspect = new GitHubInspectOrgs(
  * {
  *    organizations: [{ credential: <ANY_GITHUB_PUBLIC_TOKEN>, owner: 'typhonjs-test', regex: '^test' }]
- * });
- * ```
- *
- * To query all TyphonJS organizations use the following configuration:
- * ```
- * const githubInspect = new GitHubInspectOrgs(
- * {
- *    organizations: [{ credential: <ANY_GITHUB_PUBLIC_TOKEN>, owner: 'typhonrt', regex: '^typhonjs' }]
  * });
  * ```
  */
