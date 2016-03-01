@@ -42,7 +42,9 @@ import createNormalized from './createNormalized';
  * ```
  * {boolean}   debug - Sets the Github API querying to debug / verbose mode; default (false)
  * {string}    host - The API host; default ('api.github.com') only change for enterprise API host, etc.
+ * {string}    hostUrlPrefix - Sets the normalized GitHub host URL; default (https://github.com/).
  * {string}    pathPrefix - Additional path for API end point; default ('').
+ * {string}    rawUrlPrefix - Sets the raw GitHub host URL; default ('https://raw.githubusercontent.com/').
  * {number}    timeout - TLS / HTTPS time out for responses from GitHub; default (120000) seconds.
  * {string}    `user-agent` - User agent string necessary for GitHub API; default ('typhonjs-github-inspect-orgs').
  * ```
@@ -117,13 +119,13 @@ export default class GitHubInspectOrgs
     *    (string) regex - A regular expression to scrape for all organizations from the owner account that match.
     *
     * Optional:
-    * (boolean)   debug - (optional) Sets GitHub API to debug mode; default (false).
-    * (string)    host - (optional) Sets the GitHub API host; default (api.github.com).
-    * (string)    hostUrlPrefix - (optional) Sets the normalized GitHub host URL; default (https://github.com/).
-    * (string)    pathPrefix - (optional) Additional prefix to add after host; default ('').
-    * (string)    rawUrlPrefix - (optional) Sets the raw GitHub host URL; default (https://raw.githubusercontent.com/).
-    * (integer)   timeout - (optional) TLS / HTTPS timeout for all requests in milliseconds ('120000' / 2 minutes).
-    * (integer)   `user-agent` - (optional) Custom user agent; default ('typhonjs-github-inspect-org').
+    * (boolean)   debug - Sets GitHub API to debug mode; default (false).
+    * (string)    host - Sets the GitHub API host; default (api.github.com).
+    * (string)    hostUrlPrefix - Sets the normalized GitHub host URL; default ('https://github.com/').
+    * (string)    pathPrefix - Additional prefix to add after host; default ('').
+    * (string)    rawUrlPrefix - Sets the raw GitHub host URL; default ('https://raw.githubusercontent.com/').
+    * (integer)   timeout - TLS / HTTPS timeout for all requests in milliseconds ('120000' / 2 minutes).
+    * (integer)   `user-agent` - Custom user agent; default ('typhonjs-github-inspect-org').
     * ```
     */
    constructor(options = {})
