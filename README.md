@@ -45,7 +45,9 @@ Additional optional parameters to configure GitHubInspectOrgs include:
 ```
 {boolean}   debug - Sets the Github API querying to debug / verbose mode; default (false)
 {string}    host - The API host; default ('api.github.com') only change for enterprise API host, etc.
+{string}    hostUrlPrefix - Sets the normalized GitHub host URL; default (https://github.com/).
 {string}    pathPrefix - Additional path for API end point; default ('').
+{string}    rawUrlPrefix - Sets the raw GitHub host URL; default ('https://raw.githubusercontent.com/').
 {number}    timeout - TLS / HTTPS time out for responses from GitHub; default (120000) seconds.
 {string}    `user-agent` - User agent string necessary for GitHub API; default ('typhonjs-github-inspect-orgs').
 ```
