@@ -7,8 +7,8 @@
  */
 export default function createNormalized(categories, raw)
 {
-   if (!Array.isArray(categories)) { throw new TypeError('createNormalized error: categories is not an `array`.'); }
-   if (typeof raw !== 'object') { throw new TypeError('createNormalized error: raw is not an `object`.'); }
+   if (!Array.isArray(categories)) { throw new TypeError(`createNormalized error: 'categories' is not an 'array'.`); }
+   if (typeof raw !== 'object') { throw new TypeError(`createNormalized error: 'raw' is not an 'object'.`); }
 
    return s_DEPTH_NORMALIZE(categories, raw, 0,
    {
@@ -17,6 +17,8 @@ export default function createNormalized(categories, raw)
       timestamp: new Date()
    });
 }
+
+// Module private ---------------------------------------------------------------------------------------------------
 
 /**
  * Provides a recursive function to normalize results.

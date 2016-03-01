@@ -128,12 +128,12 @@ export default class GitHubInspectOrgs
    {
       if (typeof options !== 'object')
       {
-         throw new TypeError(`ctor error: options is not an 'object'.`);
+         throw new TypeError(`ctor error: 'options' is not an 'object'.`);
       }
 
       if (!Array.isArray(options.organizations))
       {
-         throw new TypeError(`ctor error: options.organizations is not an 'array'.`);
+         throw new TypeError(`ctor error: 'options.organizations' is not an 'array'.`);
       }
 
       /**
@@ -159,19 +159,19 @@ export default class GitHubInspectOrgs
 
          if (typeof organization !== 'object')
          {
-            throw new TypeError(`ctor error: options.organizations is not an 'object' at index: ${cntr}`);
+            throw new TypeError(`ctor error: 'options.organizations' is not an 'object' at index: ${cntr}`);
          }
 
          if (typeof organization.credential !== 'string')
          {
-            throw new TypeError(`ctor error: options.organizations.credential is not a 'string' at index: ${cntr}`);
+            throw new TypeError(`ctor error: 'options.organizations.credential' is not a 'string' at index: ${cntr}`);
          }
 
          verifiedOrg.credential = s_CREATE_CREDENTIALS(organization.credential);
 
          if (typeof organization.owner !== 'string')
          {
-            throw new TypeError(`ctor error: options.organizations.owner is not a 'string' at index: ${cntr}`);
+            throw new TypeError(`ctor error: 'options.organizations.owner' is not a 'string' at index: ${cntr}`);
          }
 
          verifiedOrg.owner = organization.owner;
@@ -250,7 +250,7 @@ export default class GitHubInspectOrgs
     */
    getCollaborators(options = {})
    {
-      if (typeof options !== 'object') { throw new TypeError(`getCollaborators error: options is not an 'object'.`); }
+      if (typeof options !== 'object') { throw new TypeError(`getCollaborators error: 'options' is not an 'object'.`); }
 
       // Prevents nested queries from generating intermediate normalized data.
       options.normalize = false;
@@ -330,7 +330,7 @@ export default class GitHubInspectOrgs
     */
    getContributors(options = {})
    {
-      if (typeof options !== 'object') { throw new TypeError(`getContributors error: options is not an 'object'.`); }
+      if (typeof options !== 'object') { throw new TypeError(`getContributors error: 'options' is not an 'object'.`); }
 
       // Prevents nested queries from generating intermediate normalized data.
       options.normalize = false;
@@ -411,7 +411,7 @@ export default class GitHubInspectOrgs
     */
    getMembers(options = {})
    {
-      if (typeof options !== 'object') { throw new TypeError(`getMembers error: options is not an 'object'.`); }
+      if (typeof options !== 'object') { throw new TypeError(`getMembers error: 'options' is not an 'object'.`); }
 
       // Prevents nested queries from generating intermediate normalized data.
       options.normalize = false;
@@ -494,7 +494,7 @@ export default class GitHubInspectOrgs
     */
    getOrgMembers(options = {})
    {
-      if (typeof options !== 'object') { throw new TypeError(`getOrgMembers error: options is not an 'object'.`); }
+      if (typeof options !== 'object') { throw new TypeError(`getOrgMembers error: 'options' is not an 'object'.`); }
 
       // If no explicit option to create normalized data is available default to true.
       const normalize = typeof options.normalize === 'boolean' ? options.normalize : true;
@@ -607,7 +607,7 @@ export default class GitHubInspectOrgs
     */
    getOrgRepos(options = {})
    {
-      if (typeof options !== 'object') { throw new TypeError(`getOrgRepos error: options is not an 'object'.`); }
+      if (typeof options !== 'object') { throw new TypeError(`getOrgRepos error: 'options' is not an 'object'.`); }
 
       // If no explicit option to create normalized data is available default to true.
       const normalize = typeof options.normalize === 'boolean' ? options.normalize : true;
@@ -743,7 +743,7 @@ export default class GitHubInspectOrgs
    {
       if (typeof options !== 'object')
       {
-         throw new TypeError(`getOrgRepoCollaborators error: options is not an 'object'.`);
+         throw new TypeError(`getOrgRepoCollaborators error: 'options' is not an 'object'.`);
       }
 
       // If no explicit option to create normalized data is available default to true.
@@ -876,7 +876,7 @@ export default class GitHubInspectOrgs
    {
       if (typeof options !== 'object')
       {
-         throw new TypeError(`getOrgRepoContributors error: options is not an 'object'.`);
+         throw new TypeError(`getOrgRepoContributors error: 'options' is not an 'object'.`);
       }
 
       // If no explicit option to create normalized data is available default to true.
@@ -1081,13 +1081,13 @@ export default class GitHubInspectOrgs
     */
    getOrgRepoStats(options = {})
    {
-      if (typeof options !== 'object') { throw new TypeError(`getOrgRepoStats error: options is not an 'object'.`); }
+      if (typeof options !== 'object') { throw new TypeError(`getOrgRepoStats error: 'options' is not an 'object'.`); }
 
       let categories = options.categories || [];
 
       if (!Array.isArray(categories))
       {
-         throw new TypeError(`getOrgRepoStats error: options.categories is not an 'array'.`);
+         throw new TypeError(`getOrgRepoStats error: 'options.categories' is not an 'array'.`);
       }
 
       // Handle wildcard `all` setting all categories.
@@ -1153,7 +1153,7 @@ export default class GitHubInspectOrgs
                            }));
                         })(org, repo, category, s_STAT_CATEGORY_TO_FUNCT[category]);
                      }
-                     else { throw new Error(`getOrgRepoStats error: unknown category '${category}.`); }
+                     else { throw new Error(`getOrgRepoStats error: unknown category '${category}'.`); }
                   }
                }
             }
@@ -1198,7 +1198,7 @@ export default class GitHubInspectOrgs
     */
    getOrgs(options = {})
    {
-      if (typeof options !== 'object') { throw new TypeError(`getOrgs error: options is not an 'object'.`); }
+      if (typeof options !== 'object') { throw new TypeError(`getOrgs error: 'options' is not an 'object'.`); }
 
       // If no explicit option to create normalized data is available default to true.
       const normalize = typeof options.normalize === 'boolean' ? options.normalize : true;
@@ -1303,7 +1303,7 @@ export default class GitHubInspectOrgs
     */
    getOrgTeams(options = {})
    {
-      if (typeof options !== 'object') { throw new TypeError(`getOrgTeams error: options is not an 'object'.`); }
+      if (typeof options !== 'object') { throw new TypeError(`getOrgTeams error: 'options' is not an 'object'.`); }
 
       // If no explicit option to create normalized data is available default to true.
       const normalize = typeof options.normalize === 'boolean' ? options.normalize : true;
@@ -1413,7 +1413,10 @@ export default class GitHubInspectOrgs
     */
    getOrgTeamMembers(options = {})
    {
-      if (typeof options !== 'object') { throw new TypeError(`getOrgTeamMembers error: options is not an 'object'.`); }
+      if (typeof options !== 'object')
+      {
+         throw new TypeError(`getOrgTeamMembers error: 'options' is not an 'object'.`);
+      }
 
       // If no explicit option to create normalized data is available default to true.
       const normalize = typeof options.normalize === 'boolean' ? options.normalize : true;
@@ -1713,7 +1716,7 @@ const s_CREATE_CREDENTIALS = (tokenOrPass) =>
    // Create credentials object hash
    if (typeof tokenOrPass === 'string')
    {
-      if (tokenOrPass === '') { throw new TypeError(`s_CREATE_CREDENTIALS error: tokenOrPass is an empty string.`); }
+      if (tokenOrPass === '') { throw new TypeError(`s_CREATE_CREDENTIALS error: 'tokenOrPass' is an empty string.`); }
 
       const splitIndex = tokenOrPass.indexOf(':');
 
@@ -1734,7 +1737,7 @@ const s_CREATE_CREDENTIALS = (tokenOrPass) =>
    }
    else
    {
-      throw new TypeError(`s_CREATE_CREDENTIALS error: tokenOrPass is not an 'object' or a 'string'.`);
+      throw new TypeError(`s_CREATE_CREDENTIALS error: 'tokenOrPass' is not an 'object' or a 'string'.`);
    }
 
    // Perform validation of the created credential.
@@ -1749,19 +1752,19 @@ const s_CREATE_CREDENTIALS = (tokenOrPass) =>
       {
          if (typeof credential.username === 'undefined' || credential.password === null || credential.username === '')
          {
-            throw new TypeError(`s_CREATE_CREDENTIALS error: credential.username is undefined or empty.`);
+            throw new TypeError(`s_CREATE_CREDENTIALS error: 'credential.username' is undefined or empty.`);
          }
 
          if (typeof credential.password === 'undefined' || credential.password === null || credential.password === '')
          {
-            throw new TypeError(`s_CREATE_CREDENTIALS error: credential.password is undefined or empty.`);
+            throw new TypeError(`s_CREATE_CREDENTIALS error: 'credential.password' is undefined or empty.`);
          }
       }
       else if (credential.type === 'oauth')
       {
          if (typeof credential.token === 'undefined' || credential.token === null || credential.token === '')
          {
-            throw new TypeError(`s_CREATE_CREDENTIALS error: credential.username is undefined or empty.`);
+            throw new TypeError(`s_CREATE_CREDENTIALS error: 'credential.username' is undefined or empty.`);
          }
       }
       else
@@ -1864,11 +1867,14 @@ const s_CREATE_REPO_FILE_PROMISES = (userAgent, promises, repos, options = {}) =
  */
 const s_GET_ORG_REPOS_AUTH = (githubInspect, options = {}) =>
 {
-   if (typeof options !== 'object') { throw new TypeError(`s_GET_ORG_REPOS_AUTH error: options is not an 'object'.`); }
+   if (typeof options !== 'object')
+   {
+      throw new TypeError(`s_GET_ORG_REPOS_AUTH error: 'options' is not an 'object'.`);
+   }
 
    if (typeof options.credential !== 'string')
    {
-      throw new TypeError(`s_GET_ORG_REPOS_AUTH error: options.credential is required or is not a 'string'.`);
+      throw new TypeError(`s_GET_ORG_REPOS_AUTH error: 'options.credential' is required or is not a 'string'.`);
    }
 
    // If no explicit option to create normalized data is available default to true.
@@ -1959,7 +1965,10 @@ const s_GET_ORG_REPOS_AUTH = (githubInspect, options = {}) =>
  */
 const s_GET_ORG_TEAMS_AUTH = (githubInspect, options = {}) =>
 {
-   if (typeof options !== 'object') { throw new TypeError(`s_GET_ORG_TEAMS_AUTH error: options is not an 'object'.`); }
+   if (typeof options !== 'object')
+   {
+      throw new TypeError(`s_GET_ORG_TEAMS_AUTH error: 'options' is not an 'object'.`);
+   }
 
    // If no explicit option to create normalized data is available default to true.
    const normalize = typeof options.normalize === 'boolean' ? options.normalize : true;
@@ -2054,11 +2063,11 @@ const s_GET_ORG_TEAMS_AUTH = (githubInspect, options = {}) =>
  */
 const s_GET_ORGS_AUTH = (githubInspect, options = {}) =>
 {
-   if (typeof options !== 'object') { throw new TypeError(`s_GET_ORGS_AUTH error: options is not an 'object'.`); }
+   if (typeof options !== 'object') { throw new TypeError(`s_GET_ORGS_AUTH error: 'options' is not an 'object'.`); }
 
    if (typeof options.credential !== 'string')
    {
-      throw new TypeError(`s_GET_ORGS_AUTH error: options.credential is required or is not a 'string'.`);
+      throw new TypeError(`s_GET_ORGS_AUTH error: 'options.credential' is required or is not a 'string'.`);
    }
 
    // If no explicit option to create normalized data is available default to true.
@@ -2136,7 +2145,7 @@ const s_GET_USER = (githubInspect, credential) =>
 {
    if (typeof credential === 'object') { credential = credential.credential; }
 
-   if (typeof credential !== 'string') { throw new TypeError(`s_GET_USER error: credential is not a 'string'.`); }
+   if (typeof credential !== 'string') { throw new TypeError(`s_GET_USER error: 'credential' is not a 'string'.`); }
 
    return new Promise((resolve) =>
    {
@@ -2162,7 +2171,7 @@ const s_IS_RATE_LIMIT_REACHED = (githubInspect, options = {}) =>
 {
    if (typeof options !== 'object')
    {
-      throw new TypeError(`s_IS_RATE_LIMIT_REACHED error: options is not an 'object'.`);
+      throw new TypeError(`s_IS_RATE_LIMIT_REACHED error: 'options' is not an 'object'.`);
    }
 
    // Early out if `skipRateLimitCheck` is set.
