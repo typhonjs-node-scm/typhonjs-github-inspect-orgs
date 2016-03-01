@@ -1,7 +1,7 @@
 'use strict';
 
 import { assert }          from 'chai';
-import fs                  from 'fs-extra';
+import fs                  from 'fs';
 
 import GitHubInspectOrgs   from '../../src/GitHubInspectOrgs';
 
@@ -21,27 +21,27 @@ describe('GitHubInspectOrgs', () =>
    // organizations are:
    // https://github.com/test-org-typhonjs
    // https://github.com/test-org-typhonjs2
-   let userCredential = process.env.GITHUB_TOKEN;
+   let credential = process.env.GITHUB_TOKEN;
 
    // If user credential is still undefined attempt to load from a local file in the root directory `./public.token`.
-   if (typeof userCredential === 'undefined')
+   if (typeof credential === 'undefined')
    {
       try
       {
-         userCredential = fs.readFileSync('./public.token', 'utf-8');
+         credential = fs.readFileSync('./public.token', 'utf-8');
       }
       catch(err) { /* ... */ }
    }
 
    // Fail now if we don't have a token.
-   if (typeof userCredential !== 'string')
+   if (typeof credential !== 'string')
    {
       throw new TypeError('No user credentials found in `process.env.GITHUB_TOKEN` or `./public.token`.');
    }
 
    const githubInspect = new GitHubInspectOrgs(
    {
-      organizations: [{ credential: userCredential, owner: 'typhonjs-test', regex: '^test' }]
+      organizations: [{ credential, owner: 'typhonjs-test', regex: '^test' }]
    });
 
    /**
@@ -69,7 +69,7 @@ describe('GitHubInspectOrgs', () =>
     */
    it('getCollaborators (user)', () =>
    {
-      return githubInspect.getCollaborators({ credential: userCredential }).then((data) =>
+      return githubInspect.getCollaborators({ credential }).then((data) =>
       {
          assert(typeof data === 'object');
          assert(typeof data.normalized === 'object');
@@ -109,7 +109,7 @@ describe('GitHubInspectOrgs', () =>
     */
    it('getContributors (user)', () =>
    {
-      return githubInspect.getContributors({ credential: userCredential }).then((data) =>
+      return githubInspect.getContributors({ credential }).then((data) =>
       {
          assert(typeof data === 'object');
          assert(typeof data.normalized === 'object');
@@ -149,7 +149,7 @@ describe('GitHubInspectOrgs', () =>
     */
    it('getMembers (user)', () =>
    {
-      return githubInspect.getMembers({ credential: userCredential }).then((data) =>
+      return githubInspect.getMembers({ credential }).then((data) =>
       {
          assert(typeof data === 'object');
          assert(typeof data.normalized === 'object');
@@ -189,7 +189,7 @@ describe('GitHubInspectOrgs', () =>
     */
    it('getOrgMembers (user)', () =>
    {
-      return githubInspect.getOrgMembers({ credential: userCredential }).then((data) =>
+      return githubInspect.getOrgMembers({ credential }).then((data) =>
       {
          assert(typeof data === 'object');
          assert(typeof data.normalized === 'object');
@@ -250,7 +250,7 @@ describe('GitHubInspectOrgs', () =>
     */
    it('getOrgRepoCollaborators (user)', () =>
    {
-      return githubInspect.getOrgRepoCollaborators({ credential: userCredential }).then((data) =>
+      return githubInspect.getOrgRepoCollaborators({ credential }).then((data) =>
       {
          assert(typeof data === 'object');
          assert(typeof data.normalized === 'object');
@@ -270,7 +270,7 @@ describe('GitHubInspectOrgs', () =>
     */
    it('getOrgRepoCollaborators (user) w/ package.json', () =>
    {
-      return githubInspect.getOrgRepoCollaborators({ credential: userCredential, repoFiles: ['package.json'] }).then(
+      return githubInspect.getOrgRepoCollaborators({ credential, repoFiles: ['package.json'] }).then(
        (data) =>
       {
          assert(typeof data === 'object');
@@ -333,7 +333,7 @@ describe('GitHubInspectOrgs', () =>
     */
    it('getOrgRepoContributors (user)', () =>
    {
-      return githubInspect.getOrgRepoContributors({ credential: userCredential }).then((data) =>
+      return githubInspect.getOrgRepoContributors({ credential }).then((data) =>
       {
          assert(typeof data === 'object');
          assert(typeof data.normalized === 'object');
@@ -353,7 +353,7 @@ describe('GitHubInspectOrgs', () =>
     */
    it('getOrgRepoContributors (user) w/ package.json', () =>
    {
-      return githubInspect.getOrgRepoContributors({ credential: userCredential, repoFiles: ['package.json'] }).then(
+      return githubInspect.getOrgRepoContributors({ credential, repoFiles: ['package.json'] }).then(
        (data) =>
       {
          assert(typeof data === 'object');
@@ -417,7 +417,7 @@ describe('GitHubInspectOrgs', () =>
     */
    it('getOrgRepoStats (user)', () =>
    {
-      return githubInspect.getOrgRepoStats({ credential: userCredential, categories: ['all'] }).then((data) =>
+      return githubInspect.getOrgRepoStats({ credential, categories: ['all'] }).then((data) =>
       {
          assert(typeof data === 'object');
          assert(typeof data.normalized === 'object');
@@ -499,7 +499,7 @@ describe('GitHubInspectOrgs', () =>
     */
    it('getOrgRepos (user)', () =>
    {
-      return githubInspect.getOrgRepos({ credential: userCredential }).then((data) =>
+      return githubInspect.getOrgRepos({ credential }).then((data) =>
       {
          assert(typeof data === 'object');
          assert(typeof data.normalized === 'object');
@@ -519,7 +519,7 @@ describe('GitHubInspectOrgs', () =>
     */
    it('getOrgRepos (user) w/ package.json', () =>
    {
-      return githubInspect.getOrgRepos({ credential: userCredential, repoFiles: ['package.json'] }).then((data) =>
+      return githubInspect.getOrgRepos({ credential, repoFiles: ['package.json'] }).then((data) =>
       {
          assert(typeof data === 'object');
          assert(typeof data.normalized === 'object');
@@ -559,7 +559,7 @@ describe('GitHubInspectOrgs', () =>
     */
    it('getOrgTeamMembers (user)', () =>
    {
-      return githubInspect.getOrgTeamMembers({ credential: userCredential }).then((data) =>
+      return githubInspect.getOrgTeamMembers({ credential }).then((data) =>
       {
          assert(typeof data === 'object');
          assert(typeof data.normalized === 'object');
@@ -599,7 +599,7 @@ describe('GitHubInspectOrgs', () =>
     */
    it('getOrgTeams (user)', () =>
    {
-      return githubInspect.getOrgTeams({ credential: userCredential }).then((data) =>
+      return githubInspect.getOrgTeams({ credential }).then((data) =>
       {
          assert(typeof data === 'object');
          assert(typeof data.normalized === 'object');
@@ -639,7 +639,7 @@ describe('GitHubInspectOrgs', () =>
     */
    it('getOrgs (user)', () =>
    {
-      return githubInspect.getOrgs({ credential: userCredential }).then((data) =>
+      return githubInspect.getOrgs({ credential }).then((data) =>
       {
          assert(typeof data === 'object');
          assert(typeof data.normalized === 'object');
