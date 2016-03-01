@@ -3,14 +3,20 @@
  *
  * @param {Array<string>}  categories - Categories to normalize.
  * @param {Array<*>}       raw - Data to parse.
+ * @param {object}         options - Optional parameters:
+ * ```
+ * (string) hostUrlPrefix - Sets the normalized GitHub host URL; default (https://github.com/).
+ * ```
+ *
  * @returns {{}}
  */
-export default function createNormalized(categories, raw)
+export default function createNormalized(categories, raw, options = {})
 {
    if (!Array.isArray(categories)) { throw new TypeError(`createNormalized error: 'categories' is not an 'array'.`); }
    if (typeof raw !== 'object') { throw new TypeError(`createNormalized error: 'raw' is not an 'object'.`); }
+   if (typeof options !== 'object') { throw new TypeError(`createNormalized error: 'options' is not an 'object'.`); }
 
-   return s_DEPTH_NORMALIZE(categories, raw, 0,
+   return s_DEPTH_NORMALIZE(categories, raw, 0, options,
    {
       scm: 'github',
       categories: categories.join(':'),
@@ -26,10 +32,15 @@ export default function createNormalized(categories, raw)
  * @param {Array<string>}  categories - Categories to normalize.
  * @param {Array<*>}       data - Data to parse.
  * @param {number}         depth - Current depth level.
+ * @param {object}         options - Optional parameters.
+ * ```
+ * (string) hostUrlPrefix - Sets the normalized GitHub host URL; default (https://github.com/).
+ * ```
  * @param {{}}             root - Initial object.
+ *
  * @returns {{}}
  */
-const s_DEPTH_NORMALIZE = (categories, data, depth, root) =>
+const s_DEPTH_NORMALIZE = (categories, data, depth, options, root) =>
 {
    const category = categories[depth];
    const nextCategory = categories.length > depth ? categories[depth + 1] : undefined;
@@ -42,11 +53,11 @@ const s_DEPTH_NORMALIZE = (categories, data, depth, root) =>
 
    for (let cntr = 0; cntr < data.length; cntr++)
    {
-      const results = sortFunction(data[cntr]);
+      const results = sortFunction(data[cntr], options);
 
       if (nextCategory && Array.isArray(data[cntr][nextCategory]))
       {
-         const nextResults = s_DEPTH_NORMALIZE(categories, data[cntr][nextCategory], depth + 1);
+         const nextResults = s_DEPTH_NORMALIZE(categories, data[cntr][nextCategory], depth + 1, options);
          results[nextCategory] = nextResults ? nextResults[nextCategory] : [];
       }
 
@@ -103,16 +114,21 @@ const s_GET_NORMALIZE_FUNCTION = (category) =>
  * Returns a normalized version of a GitHub organization.
  *
  * @param {object}   org - Organization to parse.
+ * @param {object}   options - Optional parameters.
+ * ```
+ * (string) hostUrlPrefix - Sets the normalized GitHub host URL; default (https://github.com/).
+ * ```
+ *
  * @returns {{name: string, id: number, url: string, avatar_url: string, description: string}}
  */
-const s_NORMALIZE_ORG = (org) =>
+const s_NORMALIZE_ORG = (org, options) =>
 {
    const orgName = org.login ? org.login : '';
 
    return {
       name: orgName,
       id: org.id ? org.id : -1,
-      url: `https://github.com/${orgName}`,
+      url: `${options.hostUrlPrefix}${orgName}`,
       avatar_url: org.avatar_url ? org.avatar_url : '',
       description: org.description ? org.description : ''
    };
@@ -122,13 +138,18 @@ const s_NORMALIZE_ORG = (org) =>
  * Returns a normalized version of a owner from the organizations configuration data.
  *
  * @param {object}   owner - Organization owner to parse.
+ * @param {object}   options - Optional parameters.
+ * ```
+ * (string) hostUrlPrefix - Sets the normalized GitHub host URL; default (https://github.com/).
+ * ```
+ *
  * @returns {{name: string}}
  */
-const s_NORMALIZE_OWNER = (owner) =>
+const s_NORMALIZE_OWNER = (owner, options) =>
 {
    const ownerName = owner.owner ? owner.owner : '';
 
-   return { name: ownerName, url: `https://github.com/${ownerName}` };
+   return { name: ownerName, url: `${options.hostUrlPrefix}${ownerName}` };
 };
 
 /**
@@ -136,6 +157,7 @@ const s_NORMALIZE_OWNER = (owner) =>
  * be compatible with JS Date usage.
  *
  * @param {object}   ratelimit - GitHub rate limit to parse.
+ *
  * @returns {{core: {limit: number, remaining: number, reset: number}, search: {limit: number, remaining: number, reset: number}}}
  */
 const s_NORMALIZE_RATE_LIMIT = (ratelimit) =>

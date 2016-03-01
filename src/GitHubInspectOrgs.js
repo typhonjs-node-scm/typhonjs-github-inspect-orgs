@@ -119,7 +119,9 @@ export default class GitHubInspectOrgs
     * Optional:
     * (boolean)   debug - (optional) Sets GitHub API to debug mode; default (false).
     * (string)    host - (optional) Sets the GitHub API host; default (api.github.com).
+    * (string)    hostUrlPrefix - (optional) Sets the normalized GitHub host URL; default (https://github.com/).
     * (string)    pathPrefix - (optional) Additional prefix to add after host; default ('').
+    * (string)    rawUrlPrefix - (optional) Sets the raw GitHub host URL; default (https://raw.githubusercontent.com/).
     * (integer)   timeout - (optional) TLS / HTTPS timeout for all requests in milliseconds ('120000' / 2 minutes).
     * (integer)   `user-agent` - (optional) Custom user agent; default ('typhonjs-github-inspect-org').
     * ```
@@ -211,6 +213,18 @@ export default class GitHubInspectOrgs
       });
 
       /**
+       * Stores URL prefix options for normalized data or raw file downloading.
+       *
+       * @type {{hostUrlPrefix: (string), rawUrlPrefix: (string)}}
+       * @private
+       */
+      this._optionsURL =
+      {
+         hostUrlPrefix: options.hostUrlPrefix || 'https://github.com/',
+         rawUrlPrefix: options.rawUrlPrefix || 'https://raw.githubusercontent.com/'
+      };
+
+      /**
        * Stores the user agent for `raw.githubusercontent.com` requests.
        *
        * @type {{}}
@@ -294,7 +308,8 @@ export default class GitHubInspectOrgs
             // Sort by org name.
             collaborators.sort((a, b) => { return a.login.localeCompare(b.login); });
 
-            return { normalized: createNormalized(['collaborators'], collaborators), raw: collaborators };
+            return { normalized: createNormalized(['collaborators'], collaborators, this._optionsURL),
+             raw: collaborators };
          });
       });
    }
@@ -375,7 +390,8 @@ export default class GitHubInspectOrgs
             // Sort by user name.
             contributors.sort((a, b) => { return a.login.localeCompare(b.login); });
 
-            return { normalized: createNormalized(['contributors'], contributors), raw: contributors };
+            return { normalized: createNormalized(['contributors'], contributors, this._optionsURL),
+             raw: contributors };
          });
       });
    }
@@ -448,7 +464,7 @@ export default class GitHubInspectOrgs
             // Sort by user name.
             members.sort((a, b) => { return a.login.localeCompare(b.login); });
 
-            return { normalized: createNormalized(['members'], members), raw: members };
+            return { normalized: createNormalized(['members'], members, this._optionsURL), raw: members };
          });
       });
    }
@@ -542,7 +558,8 @@ export default class GitHubInspectOrgs
 
             return Promise.all(promises).then(() =>
             {
-               return normalize ? { normalized: createNormalized(['orgs', 'members'], orgs), raw: orgs } : orgs;
+               return normalize ? { normalized: createNormalized(['orgs', 'members'], orgs, this._optionsURL),
+                raw: orgs } : orgs;
             });
          });
       });
@@ -613,6 +630,7 @@ export default class GitHubInspectOrgs
       const normalize = typeof options.normalize === 'boolean' ? options.normalize : true;
 
       const githubAPI = this._githubAPI;
+      const optionsURL = this._optionsURL;
       const userAgent = this._userAgent;
 
       // Fail early if rate limit is reached or user authentication fails.
@@ -653,7 +671,7 @@ export default class GitHubInspectOrgs
                            org.repos = repos;
 
                            // Processes any file download requests from options.repoFiles
-                           s_CREATE_REPO_FILE_PROMISES(userAgent, innerPromises, repos, options);
+                           s_CREATE_REPO_FILE_PROMISES(userAgent, innerPromises, repos, options, optionsURL);
 
                            resolve(repos);
                         }
@@ -666,7 +684,8 @@ export default class GitHubInspectOrgs
             {
                return Promise.all(innerPromises).then(() =>
                {
-                  return normalize ? { normalized: createNormalized(['orgs', 'repos'], orgs), raw: orgs } : orgs;
+                  return normalize ? { normalized: createNormalized(['orgs', 'repos'], orgs, optionsURL),
+                   raw: orgs } : orgs;
                });
             });
          });
@@ -799,8 +818,8 @@ export default class GitHubInspectOrgs
 
             return Promise.all(promises).then(() =>
             {
-               return normalize ?
-                { normalized: createNormalized(['orgs', 'repos', 'collaborators'], orgs), raw: orgs } : orgs;
+               return normalize ? { normalized: createNormalized(['orgs', 'repos', 'collaborators'], orgs,
+                this._optionsURL), raw: orgs } : orgs;
             });
          });
       });
@@ -930,8 +949,8 @@ export default class GitHubInspectOrgs
 
             return Promise.all(promises).then(() =>
             {
-               return normalize ?
-               { normalized: createNormalized(['orgs', 'repos', 'contributors'], orgs), raw: orgs } : orgs;
+               return normalize ? { normalized: createNormalized(['orgs', 'repos', 'contributors'], orgs,
+                this._optionsURL), raw: orgs } : orgs;
             });
          });
       });
@@ -1160,7 +1179,8 @@ export default class GitHubInspectOrgs
 
             return Promise.all(promises).then(() =>
             {
-               return normalize ? { normalized: createNormalized(['orgs', 'repos', 'stats'], orgs), raw: orgs } : orgs;
+               return normalize ? { normalized: createNormalized(['orgs', 'repos', 'stats'], orgs, this._optionsURL),
+                raw: orgs } : orgs;
             });
          });
       });
@@ -1256,7 +1276,8 @@ export default class GitHubInspectOrgs
             // Sort by org name.
             results.sort((a, b) => { return a.login.localeCompare(b.login); });
 
-            return normalize ? { normalized: createNormalized(['orgs'], results), raw: results } : results;
+            return normalize ? { normalized: createNormalized(['orgs'], results, this._optionsURL), raw: results } :
+             results;
          });
       });
    }
@@ -1356,7 +1377,8 @@ export default class GitHubInspectOrgs
 
             return Promise.all(promises).then(() =>
             {
-               return normalize ? { normalized: createNormalized(['orgs', 'teams'], orgs), raw: orgs } : orgs;
+               return normalize ? { normalized: createNormalized(['orgs', 'teams'], orgs, this._optionsURL),
+                raw: orgs } : orgs;
             });
          });
       });
@@ -1466,8 +1488,8 @@ export default class GitHubInspectOrgs
 
             return Promise.all(promises).then(() =>
             {
-               return normalize ?
-                { normalized: createNormalized(['orgs', 'teams', 'members'], orgs), raw: orgs } : orgs;
+               return normalize ? { normalized: createNormalized(['orgs', 'teams', 'members'], orgs, this._optionsURL),
+                raw: orgs } : orgs;
             });
          });
       });
@@ -1559,7 +1581,7 @@ export default class GitHubInspectOrgs
             // Sort by owner name.
             owners.sort((a, b) => { return a.owner.localeCompare(b.owner); });
 
-            return { normalized: createNormalized(['owners', 'orgs'], owners), raw: owners };
+            return { normalized: createNormalized(['owners', 'orgs'], owners, this._optionsURL), raw: owners };
          });
       });
    }
@@ -1634,7 +1656,7 @@ export default class GitHubInspectOrgs
          // Sort by owner name.
          owners.sort((a, b) => { return a.owner.localeCompare(b.owner); });
 
-         return { normalized: createNormalized(['owners', 'ratelimit'], owners), raw: owners };
+         return { normalized: createNormalized(['owners', 'ratelimit'], owners, this._optionsURL), raw: owners };
       });
    }
 
@@ -1661,7 +1683,7 @@ export default class GitHubInspectOrgs
     */
    getOwners()
    {
-      const normalized = createNormalized(['owners'], this._organizations);
+      const normalized = createNormalized(['owners'], this._organizations, this._optionsURL);
 
       normalized.owners.sort((a, b) => { return a.name.localeCompare(b.name); });
 
@@ -1788,19 +1810,22 @@ const s_CREATE_CREDENTIALS = (tokenOrPass) =>
  * @param {Array}    promises - An array of promises to push file request Promises.
  * @param {Array}    repos - An array of repos to resolve requests against for all `repoFiles`.
  * @param {object}   options - Optional parameters which potentially contains the `repoFiles` array.
+ * @param {object}   optionsURL - Optional URL parameters which potentially contains `rawUrlPrefix` string.
  */
-const s_CREATE_REPO_FILE_PROMISES = (userAgent, promises, repos, options = {}) =>
+const s_CREATE_REPO_FILE_PROMISES = (userAgent, promises, repos, options = {}, optionsURL = {}) =>
 {
    if (typeof options !== 'object')
    {
       throw new TypeError(`s_CREATE_REPO_FILE_PROMISES error: 'options' is not an 'object'.`);
    }
 
-   // If there are no files to process exit early.
-   if (typeof options.repoFiles === 'undefined')
+   if (typeof optionsURL !== 'object')
    {
-      return;
+      throw new TypeError(`s_CREATE_REPO_FILE_PROMISES error: 'optionsURL' is not an 'object'.`);
    }
+
+   // If there are no files to process exit early.
+   if (typeof options.repoFiles === 'undefined') { return; }
 
    if (typeof userAgent !== 'object')
    {
@@ -1822,10 +1847,7 @@ const s_CREATE_REPO_FILE_PROMISES = (userAgent, promises, repos, options = {}) =
       throw new TypeError(`s_CREATE_REPO_FILE_PROMISES error: 'options.repoFiles' is not an 'array'.`);
    }
 
-   if (options.repoFiles.length === 0)
-   {
-      return;
-   }
+   if (options.repoFiles.length === 0) { return; }
 
    for (let cntr = 0; cntr < repos.length; cntr++)
    {
@@ -1842,7 +1864,7 @@ const s_CREATE_REPO_FILE_PROMISES = (userAgent, promises, repos, options = {}) =
             {
                const options =
                {
-                  url: `https://raw.githubusercontent.com/${repo.full_name}/${repo.default_branch}/${filePath}`,
+                  url: `${optionsURL.rawUrlPrefix}${repo.full_name}/${repo.default_branch}/${filePath}`,
                   headers: userAgent
                };
 
@@ -1943,12 +1965,14 @@ const s_GET_ORG_REPOS_AUTH = (githubInspect, options = {}) =>
                orgs[cntr].repos.sort((a, b) => { return a.name.localeCompare(b.name); });
 
                // Processes any file download requests from options.repoFiles
-               s_CREATE_REPO_FILE_PROMISES(githubInspect._userAgent, innerPromises, orgs[cntr].repos, options);
+               s_CREATE_REPO_FILE_PROMISES(githubInspect._userAgent, innerPromises, orgs[cntr].repos, options,
+                githubInspect._optionsURL);
             }
 
             return Promise.all(innerPromises).then(() =>
             {
-               return normalize ? { normalized: createNormalized(['orgs', 'repos'], orgs), raw: orgs } : orgs;
+               return normalize ? { normalized: createNormalized(['orgs', 'repos'], orgs, githubInspect._optionsURL),
+                raw: orgs } : orgs;
             });
          });
       });
@@ -2046,7 +2070,8 @@ const s_GET_ORG_TEAMS_AUTH = (githubInspect, options = {}) =>
                   orgs[cntr].teams.sort((a, b) => { return a.name.localeCompare(b.name); });
                }
 
-               return normalize ? { normalized: createNormalized(['orgs', 'teams'], orgs), raw: orgs } : orgs;
+               return normalize ? { normalized: createNormalized(['orgs', 'teams'], orgs, githubInspect._optionsURL),
+                raw: orgs } : orgs;
             });
          });
       });
@@ -2122,7 +2147,8 @@ const s_GET_ORGS_AUTH = (githubInspect, options = {}) =>
                      // Sort by org name.
                      results.sort((a, b) => { return a.login.localeCompare(b.login); });
 
-                     resolve(normalize ? { normalized: createNormalized(['orgs'], results), raw: results } : results);
+                     resolve(normalize ? { normalized: createNormalized(['orgs'], results, githubInspect._optionsURL),
+                      raw: results } : results);
                   });
                });
             }
