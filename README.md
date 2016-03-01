@@ -105,12 +105,19 @@ const githubInspect = new GitHubInspectOrgs(
 
 GitHubInspectOrgs method summary:
 
-- [getCollaborators](#getCollaborators)
-- [getContributors](#getContributors)
-- [getMembers](#getMembers)
+- [getCollaborators](#getCollaborators) - Returns all collaborators across all organizations.
+- [getContributors](#getContributors) - Returns all contributors across all organizations.
+- [getMembers](#getMembers) - Returns all organization members across all organizations.
 - [getOrgMembers](#getOrgMembers)
 - [getOrgRepos](#getOrgRepos)
 - [getOrgRepoCollaborators](#getOrgRepoCollaborators)
+- [getOrgRepoContributors](#getOrgRepoContributors)
+- [getOrgRepoStats](#getOrgRepoStats)
+- [getOrgs](#getOrgs)
+- [getOrgTeams](#getOrgTeams)
+- [getOwnerOrgs](#getOwnerOrgs)
+- [getOwnerRateLimits](#getOwnerRateLimits)
+- [getOwners](#getOwners)
 
 -----------
 <a name="getCollaborators"></a>
@@ -371,6 +378,444 @@ The following is an abbreviated example response for the normalized data request
          },
          // .... more data
        ]
+     },
+     // .... more data
+   ]
+}
+```
+
+Returns `Promise` with an object hash containing `normalized` and `raw` entries.
+
+-----------
+<a name="getOrgRepoContributors"></a>
+####getOrgRepoContributors
+
+Returns all contributors by repo by organization across all organizations.
+
+@param {object}  options - Optional parameters.
+```
+(string)          credential - A public access token for any GitHub user which limits the responses to the
+                               organizations and other query data that this particular user is a member of or has
+                               access to currently.
+
+(Array<string>)   repoFiles - An array of file paths / names used in repo oriented queries that is relative to the
+                              repos default branch (usually 'master') that are requested from
+                              `https://raw.githubusercontent.com` and added to the respective repo in an hash
+                              entry `repo_files` indexed by file path / name provided. This is useful for instance
+                              with JS repos in requesting `package.json`, but any file can be requested. Each
+                              entry in the `repo_files` hash is also a hash containing `statusCode` of the
+                              response and `body` containing the contents of the file requested.
+```
+
+The following is an abbreviated example response for the normalized data requested:
+```
+{
+   "scm": "github",
+   "categories": "orgs:repos:contributors",
+   "timestamp": "2016-02-20T04:56:03.792Z",
+   "orgs": [
+     {
+       "name": "test-org-typhonjs",
+       "id": 17228306,
+       "url": "https:\/\/github.com\/test-org-typhonjs",
+       "avatar_url": "https:\/\/avatars.githubusercontent.com\/u\/17228306?v=3",
+       "description": "Just a test organization for testing typhonjs-github-inspect-orgs",
+       "repos": [
+         {
+           "name": "test-repo1",
+           "full_name": "test-org-typhonjs\/test-repo1",
+           "id": 51677097,
+           "url": "https:\/\/github.com\/test-org-typhonjs\/test-repo1",
+           "description": "Just a test repo",
+           "private": false,
+           "repo_files": {},
+           "fork": false,
+           "created_at": "2016-02-14T03:01:24Z",
+           "git_url": "git:\/\/github.com\/test-org-typhonjs\/test-repo1.git",
+           "ssh_url": "git@github.com:test-org-typhonjs\/test-repo1.git",
+           "clone_url": "https:\/\/github.com\/test-org-typhonjs\/test-repo1.git",
+           "default_branch": "master",
+           "contributors": [
+             {
+               "name": "typhonjs-test",
+               "id": 17188714,
+               "url": "https:\/\/github.com\/typhonjs-test",
+               "avatar_url": "https:\/\/avatars.githubusercontent.com\/u\/17188714?v=3"
+             },
+             // .... more data
+           ]
+         },
+         // .... more data
+       ]
+     },
+     // .... more data
+   ]
+}
+```
+
+Returns `Promise` with an object hash containing `normalized` and `raw` entries.
+
+-----------
+<a name="getOrgRepoStats"></a>
+####getOrgRepoStats
+
+Returns GitHub statistics by repo by organization across all organizations. Each repo will contain a `stats`
+object hash with the categories defined below. Please be mindful of accessing this functionality as the GitHub API
+is being queried directly and with excessive use rate limits will be reached.
+
+@param {object}  options - Optional parameters.
+```
+Required:
+(Array<String>)   categories - list of stats categories to query. May include:
+   'all': A wildcard that includes all categories defined below.
+   'codeFrequency': Get the number of additions and deletions per week.
+   'commitActivity': Get the last year of commit activity data.
+   'contributors': Get contributors list with additions, deletions & commit counts.
+   'participation': Get the weekly commit count for the repository owner & everyone else.
+   'punchCard': Get the number of commits per hour in each day.
+   'stargazers': Get list GitHub users who starred repos.
+   'watchers': Get list of GitHub users who are watching repos.
+
+Optional:
+(string)          credential - A public access token for any GitHub user which limits the responses to the
+                               organizations and other query data that this particular user is a member of or has
+                               access to currently.
+
+(Array<string>)   repoFiles - An array of file paths / names used in repo oriented queries that is relative to the
+                              repos default branch (usually 'master') that are requested from
+                              `https://raw.githubusercontent.com` and added to the respective repo in an hash
+                              entry `repo_files` indexed by file path / name provided. This is useful for instance
+                              with JS repos in requesting `package.json`, but any file can be requested. Each
+                              entry in the `repo_files` hash is also a hash containing `statusCode` of the
+                              response and `body` containing the contents of the file requested.
+```
+
+Version 3.0 of the GitHub API is used for all queries. Please review the repo statistics documentation for
+a full description: https://developer.github.com/v3/repos/statistics/
+
+It should be noted that the GitHub API caches statistic results and on the first query may not return results
+on that query. In that case the query needs to be run again. A boolean `_resultsPending` is added to
+`repo.stats[0]._resultsPending` in this case indicating that the query needs to be rerun.
+
+The following is an abbreviated example response for the normalized data requested:
+```
+{
+  "scm": "github",
+  "categories": "orgs:repos:stats",
+  "timestamp": "2016-02-27T10:31:51.979Z",
+  "orgs": [
+    {
+      "name": "typhonjs-backbone",
+      "id": 17154328,
+      "url": "https://github.com/typhonjs-backbone",
+      "avatar_url": "https://avatars.githubusercontent.com/u/17154328?v=3",
+      "description": "",
+      "repos": [
+        {
+          "name": "backbone-es6",
+          "full_name": "typhonjs-backbone/backbone-es6",
+          "id": 44065471,
+          "url": "https://github.com/typhonjs-backbone/backbone-es6",
+          "description": "A fork of Backbone converting it to ES6.",
+          "private": false,
+          "repo_files": {},
+          "fork": false,
+          "created_at": "2015-10-11T19:04:43Z",
+          "updated_at": "2016-02-22T09:44:19Z",
+          "pushed_at": "2016-02-12T17:34:02Z",
+          "git_url": "git://github.com/typhonjs-backbone/backbone-es6.git",
+          "ssh_url": "git@github.com:typhonjs-backbone/backbone-es6.git",
+          "clone_url": "https://github.com/typhonjs-backbone/backbone-es6.git",
+          "stargazers_count": 6,
+          "watchers_count": 6,
+          "default_branch": "master",
+          "stats": [
+            {
+              "codeFrequency": [
+                [1444521600,62981,-57],
+                // .... more data
+              ],
+              "commitActivity": [
+                {
+                  "days": [0,0,0,0,0,0,0],
+                  "total": 0,
+                  "week": 1425171600
+                },
+                // .... more data
+              ],
+              "participation": {
+                "all": [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7,29,15,13,16,3,1,0,0,0,9,0,1,2,7,15,3,2,0,0],
+                "owner": [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+              },
+              "punchCard": [
+                [0,0,0],
+                // .... more data
+              ],
+              "contributors": [
+                {
+                  "total": 118,
+                  "weeks": [
+                    {
+                      "w": 1444521600,
+                      "a": 62957,
+                      "d": 57,
+                      "c": 8
+                    },
+                    // .... more data
+                  ],
+                  "author": {
+                    "name": "typhonrt",
+                    "id": 311473,
+                    "url": "https://github.com/typhonrt",
+                    "avatar_url": "https://avatars.githubusercontent.com/u/311473?v=3"
+                  }
+                }
+              ],
+              "stargazers": [
+                {
+                  "name": "typhonrt",
+                  "id": 311473,
+                  "url": "https:\/\/github.com\/typhonrt",
+                  "avatar_url": "https:\/\/avatars.githubusercontent.com\/u\/311473?v=3"
+                }
+              ],
+              "watchers": [
+                {
+                  "name": "typhonrt",
+                  "id": 311473,
+                  "url": "https:\/\/github.com\/typhonrt",
+                  "avatar_url": "https:\/\/avatars.githubusercontent.com\/u\/311473?v=3"
+                }
+              ]
+            }
+          ]
+        },
+        // .... more data
+      ]
+    },
+    // .... more data
+  ]
+}
+```
+
+Returns `Promise` with an object hash containing `normalized` and `raw` entries.
+
+-----------
+<a name="getOrgs"></a>
+####getOrgs
+
+Returns all organizations.
+
+@param {object}  options - Optional parameters.
+```
+(string) credential - A public access token for any GitHub user which limits the responses to the organizations
+                      and other query data that this particular user is a member of or has access to currently.
+```
+
+The following is an abbreviated example response for the normalized data requested:
+```
+{
+   "scm": "github",
+   "categories": "orgs",
+   "timestamp": "2016-02-20T04:56:03.792Z",
+   "orgs": [
+     {
+       "name": "test-org-typhonjs",
+       "id": 17228306,
+       "url": "https:\/\/github.com\/test-org-typhonjs",
+       "avatar_url": "https:\/\/avatars.githubusercontent.com\/u\/17228306?v=3",
+       "description": "Just a test organization for testing typhonjs-github-inspect-orgs"
+     },
+     // .... more data
+   ]
+}
+```
+
+Returns `Promise` with an object hash containing `normalized` and `raw` entries.
+
+-----------
+<a name="getOrgTeams"></a>
+####getOrgTeams
+
+Returns all teams by organization across all organizations.
+
+@param {object}  options - Optional parameters.
+```
+(string) credential - A public access token for any GitHub user which limits the responses to the organizations
+                      and other query data that this particular user is a member of or has access to currently.
+```
+
+The following is an abbreviated example response for the normalized data requested:
+```
+{
+   "scm": "github",
+   "categories": "orgs:teams",
+   "timestamp": "2016-02-20T04:56:03.792Z",
+   "orgs": [
+     {
+       "name": "test-org-typhonjs",
+       "id": 17228306,
+       "url": "https:\/\/github.com\/test-org-typhonjs",
+       "avatar_url": "https:\/\/avatars.githubusercontent.com\/u\/17228306?v=3",
+       "description": "Just a test organization for testing typhonjs-github-inspect-orgs",
+       "teams": [
+         {
+           "name": "cool-test-team",
+           "id": 1927253,
+           "privacy": "closed",
+           "permission": "pull",
+           "description": ""
+         },
+         // .... more data
+       ]
+     },
+     // .... more data
+   ]
+}
+```
+
+Returns `Promise` with an object hash containing `normalized` and `raw` entries.
+
+-----------
+<a name="getOrgTeamMembers"></a>
+####getOrgTeamMembers
+
+Returns all members by team by organization across all organizations.
+
+@param {object}  options - Optional parameters.
+```
+(string) credential - A public access token for any GitHub user which limits the responses to the organizations
+                      and other query data that this particular user is a member of or has access to currently.
+```
+
+The following is an abbreviated example response for the normalized data requested:
+```
+{
+   "scm": "github",
+   "categories": "orgs:teams:members",
+   "timestamp": "2016-02-20T04:56:03.792Z",
+   "orgs": [
+     {
+       "name": "test-org-typhonjs",
+       "id": 17228306,
+       "url": "https:\/\/github.com\/test-org-typhonjs",
+       "avatar_url": "https:\/\/avatars.githubusercontent.com\/u\/17228306?v=3",
+       "description": "Just a test organization for testing typhonjs-github-inspect-orgs",
+       "teams": [
+         {
+           "name": "cool-test-team",
+           "id": 1927253,
+           "privacy": "closed",
+           "permission": "pull",
+           "description": "",
+           "members": [
+             {
+               "name": "typhonjs-test",
+               "id": 17188714,
+               "url": "https:\/\/github.com\/typhonjs-test",
+               "avatar_url": "https:\/\/avatars.githubusercontent.com\/u\/17188714?v=3"
+             },
+             // .... more data
+           ]
+         },
+         // .... more data
+       ]
+     },
+     // .... more data
+   ]
+}
+```
+
+Returns `Promise` with an object hash containing `normalized` and `raw` entries.
+
+-----------
+<a name="getOwnerOrgs"></a>
+####getOwnerOrgs
+
+Returns all organizations by organization owner.
+
+The following is an abbreviated example response for the normalized data requested:
+```
+{
+   "scm": "github",
+   "categories": "orgs:teams",
+   "timestamp": "2016-02-20T04:56:03.792Z",
+   "owners": [
+     {
+       "name": "typhonjs-test",
+       "url": "https:\/\/github.com\/typhonjs-test",
+       "orgs": [
+         {
+           "name": "test-org-typhonjs",
+           "id": 17228306,
+           "url": "https:\/\/github.com\/test-org-typhonjs",
+           "avatar_url": "https:\/\/avatars.githubusercontent.com\/u\/17228306?v=3",
+           "description": "Just a test organization for testing typhonjs-github-inspect-orgs"
+         },
+         // more data...
+       ]
+     },
+     // .... more data
+   ]
+}
+```
+
+Returns `Promise` with an object hash containing `normalized` and `raw` entries.
+
+-----------
+<a name="getOwnerRateLimits"></a>
+####getOwnerRateLimits
+
+Returns the current rate limits for all organization owners.
+
+The following is an abbreviated example response for the normalized data requested:
+```
+{
+   "scm": "github",
+   "categories": "owners:ratelimit",
+   "timestamp": "2016-02-20T04:56:03.792Z",
+   "owners": [
+     {
+       "name": "typhonjs-test",
+       "url": "https:\/\/github.com\/typhonjs-test",
+       "ratelimit": [
+         {
+           "core": {
+             "limit": 5000,
+             "remaining": 4976,
+             "reset": 1456571465000
+           },
+           "search": {
+             "limit": 30,
+             "remaining": 30,
+             "reset": 1456571287000
+           }
+         }
+       ]
+     },
+     // .... more data
+   ]
+}
+```
+
+Returns `Promise` with an object hash containing `normalized` and `raw` entries.
+
+-----------
+<a name="getOwners"></a>
+####getOwners
+
+Returns all organization owners.
+
+The following is an abbreviated example response for the normalized data requested:
+```
+{
+   "scm": "github",
+   "categories": "owners",
+   "timestamp": "2016-02-20T04:56:03.792Z",
+   "owners": [
+     {
+       "name": "typhonjs-test",
+       "url": "https:\/\/github.com\/typhonjs-test"
      },
      // .... more data
    ]
