@@ -107,6 +107,8 @@ GitHubInspectOrgs Method summary:
 
 - [getCollaborators](#getCollaborators)
 - [getContributors](#getContributors)
+- [getMembers](#getMembers)
+- [getOrgMembers](#getOrgMembers)
  
 -----------
 <a name="getCollaborators"></a>
@@ -164,6 +166,80 @@ The following is an abbreviated example response for the normalized data request
        "id": 311473,
        "url": "https:\/\/github.com\/typhonrt",
        "avatar_url": "https:\/\/avatars.githubusercontent.com\/u\/311473?v=3"
+     },
+     // .... more data
+   ]
+}
+```
+
+Returns `Promise` with an object hash containing `normalized` and `raw` entries.
+
+-----------
+<a name="getMembers"></a>
+####getMembers
+
+Returns all organization members across all organizations.
+
+@param {object}  options - Optional parameters.
+```
+(string) credential - A public access token for any GitHub user which limits the responses to the organizations
+                      and other query data that this particular user is a member of or has access to currently.
+```
+
+The following is an abbreviated example response for the normalized data requested:
+```
+{
+   "scm": "github",
+   "categories": "members",
+   "timestamp": "2016-02-20T04:56:03.792Z",
+   "members": [
+     {
+       "name": "typhonrt",
+       "id": 311473,
+       "url": "https:\/\/github.com\/typhonrt",
+       "avatar_url": "https:\/\/avatars.githubusercontent.com\/u\/311473?v=3"
+     },
+     // .... more data
+   ]
+}
+```
+
+Returns `Promise` with an object hash containing `normalized` and `raw` entries.
+
+-----------
+<a name="getOrgMembers"></a>
+####getOrgMembers
+
+Returns all members by organization across all organizations.
+
+@param {object}  options - Optional parameters.
+```
+(string) credential - A public access token for any GitHub user which limits the responses to the organizations
+                      and other query data that this particular user is a member of or has access to currently.
+```
+
+The following is an abbreviated example response for the normalized data requested:
+```
+{
+   "scm": "github",
+   "categories": "orgs:members",
+   "timestamp": "2016-02-20T04:56:03.792Z",
+   "orgs": [
+     {
+       "name": "test-org-typhonjs",
+       "id": 17228306,
+       "url": "https:\/\/github.com\/test-org-typhonjs",
+       "avatar_url": "https:\/\/avatars.githubusercontent.com\/u\/17228306?v=3",
+       "description": "Just a test organization for testing typhonjs-github-inspect-orgs",
+       "members": [
+         {
+           "name": "typhonjs-test",
+           "id": 17188714,
+           "url": "https:\/\/github.com\/typhonjs-test",
+           "avatar_url": "https:\/\/avatars.githubusercontent.com\/u\/17188714?v=3"
+         },
+         // .... more data
+       ]
      },
      // .... more data
    ]
