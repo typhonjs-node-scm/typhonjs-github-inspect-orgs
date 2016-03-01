@@ -103,13 +103,15 @@ const githubInspect = new GitHubInspectOrgs(
 
 -----------------------
 
-GitHubInspectOrgs Method summary:
+GitHubInspectOrgs method summary:
 
 - [getCollaborators](#getCollaborators)
 - [getContributors](#getContributors)
 - [getMembers](#getMembers)
 - [getOrgMembers](#getOrgMembers)
- 
+- [getOrgRepos](#getOrgRepos)
+- [getOrgRepoCollaborators](#getOrgRepoCollaborators)
+
 -----------
 <a name="getCollaborators"></a>
 ####getCollaborators
@@ -237,6 +239,135 @@ The following is an abbreviated example response for the normalized data request
            "id": 17188714,
            "url": "https:\/\/github.com\/typhonjs-test",
            "avatar_url": "https:\/\/avatars.githubusercontent.com\/u\/17188714?v=3"
+         },
+         // .... more data
+       ]
+     },
+     // .... more data
+   ]
+}
+```
+
+Returns `Promise` with an object hash containing `normalized` and `raw` entries.
+
+-----------
+<a name="getOrgRepos"></a>
+####getOrgRepos
+
+Returns all repos by organization across all organizations.
+
+@param {object}  options - Optional parameters.
+```
+(string)          credential - A public access token for any GitHub user which limits the responses to the
+                               organizations and other query data that this particular user is a member of or has
+                               access to currently.
+
+(Array<string>)   repoFiles - An array of file paths / names used in repo oriented queries that is relative to the
+                              repos default branch (usually 'master') that are requested from
+                              `https://raw.githubusercontent.com` and added to the respective repo in an hash
+                              entry `repo_files` indexed by file path / name provided. This is useful for instance
+                              with JS repos in requesting `package.json`, but any file can be requested. Each
+                              entry in the `repo_files` hash is also a hash containing `statusCode` of the
+                              response and `body` containing the contents of the file requested.
+```
+
+The following is an abbreviated example response for the normalized data requested:
+```
+{
+   "scm": "github",
+   "categories": "orgs:repos",
+   "timestamp": "2016-02-20T04:56:03.792Z",
+   "orgs": [
+     {
+       "name": "test-org-typhonjs",
+       "id": 17228306,
+       "url": "https:\/\/github.com\/test-org-typhonjs",
+       "avatar_url": "https:\/\/avatars.githubusercontent.com\/u\/17228306?v=3",
+       "description": "Just a test organization for testing typhonjs-github-inspect-orgs",
+       "repos": [
+         {
+           "name": "test-repo1",
+           "full_name": "test-org-typhonjs\/test-repo1",
+           "id": 51677097,
+           "url": "https:\/\/github.com\/test-org-typhonjs\/test-repo1",
+           "description": "Just a test repo",
+           "private": false,
+           "repo_files": {},
+           "fork": false,
+           "created_at": "2016-02-14T03:01:24Z",
+           "git_url": "git:\/\/github.com\/test-org-typhonjs\/test-repo1.git",
+           "ssh_url": "git@github.com:test-org-typhonjs\/test-repo1.git",
+           "clone_url": "https:\/\/github.com\/test-org-typhonjs\/test-repo1.git",
+           "default_branch": "master"
+         },
+         // .... more data
+       ]
+     },
+     // .... more data
+   ]
+}
+```
+
+Returns `Promise` with an object hash containing `normalized` and `raw` entries.
+
+-----------
+<a name="getOrgRepoCollaborators"></a>
+####getOrgRepoCollaborators
+
+Returns all collaborators by repo by organization across all organizations.
+
+@param {object}  options - Optional parameters.
+```
+(string)          credential - A public access token for any GitHub user which limits the responses to the
+                               organizations and other query data that this particular user is a member of or has
+                               access to currently.
+
+(Array<string>)   repoFiles - An array of file paths / names used in repo oriented queries that is relative to the
+                              repos default branch (usually 'master') that are requested from
+                              `https://raw.githubusercontent.com` and added to the respective repo in an hash
+                              entry `repo_files` indexed by file path / name provided. This is useful for instance
+                              with JS repos in requesting `package.json`, but any file can be requested. Each
+                              entry in the `repo_files` hash is also a hash containing `statusCode` of the
+                              response and `body` containing the contents of the file requested.
+```
+
+The following is an abbreviated example response for the normalized data requested:
+```
+{
+   "scm": "github",
+   "categories": "orgs:repos:collaborators",
+   "timestamp": "2016-02-20T04:56:03.792Z",
+   "orgs": [
+     {
+       "name": "test-org-typhonjs",
+       "id": 17228306,
+       "url": "https:\/\/github.com\/test-org-typhonjs",
+       "avatar_url": "https:\/\/avatars.githubusercontent.com\/u\/17228306?v=3",
+       "description": "Just a test organization for testing typhonjs-github-inspect-orgs",
+       "repos": [
+         {
+           "name": "test-repo1",
+           "full_name": "test-org-typhonjs\/test-repo1",
+           "id": 51677097,
+           "url": "https:\/\/github.com\/test-org-typhonjs\/test-repo1",
+           "description": "Just a test repo",
+           "private": false,
+           "repo_files": {},
+           "fork": false,
+           "created_at": "2016-02-14T03:01:24Z",
+           "git_url": "git:\/\/github.com\/test-org-typhonjs\/test-repo1.git",
+           "ssh_url": "git@github.com:test-org-typhonjs\/test-repo1.git",
+           "clone_url": "https:\/\/github.com\/test-org-typhonjs\/test-repo1.git",
+           "default_branch": "master",
+           "collaborators": [
+             {
+               "name": "typhonjs-test",
+               "id": 17188714,
+               "url": "https:\/\/github.com\/typhonjs-test",
+               "avatar_url": "https:\/\/avatars.githubusercontent.com\/u\/17188714?v=3"
+             },
+             // .... more data
+           ]
          },
          // .... more data
        ]
