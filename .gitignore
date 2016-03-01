@@ -1,7 +1,8 @@
 .idea
 .DS_Store
 npm-debug.log
-public.token
+token.owner
+token.user
 coverage
 dist
 docs
