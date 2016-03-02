@@ -120,6 +120,8 @@ GitHubInspectOrgs method summary:
 - [getOwnerOrgs](#getOwnerOrgs) - Returns all organizations by organization owner.
 - [getOwnerRateLimits](#getOwnerRateLimits) - Returns the current rate limits for all organization owners.
 - [getOwners](#getOwners) - Returns all organization owners.
+- [getUserFromCredential](#getUserFromCredential) - Returns a the GitHub username who owns the provided credential.
+- [getUserOwnsCredential](#getUserOwnsCredential) - Returns a boolean indicating the GitHub username owns the given credential.
 
 -----------
 <a name="getCollaborators"></a>
@@ -826,4 +828,49 @@ The following is an abbreviated example response for the normalized data request
 
 Returns `Promise` with an object hash containing `normalized` and `raw` entries.
 
+-----------
+<a name="getUserFromCredential"></a>
+####getUserFromCredential
 
+Returns a the GitHub username who owns the provided credential.
+
+@param {object}  options - Optional parameters.
+```
+(string) credential - A public access token for any GitHub user which limits the responses to the organizations
+                      and other query data that this particular user is a member of or has access to currently.
+```
+
+The following is an example response for the normalized data requested:
+```
+{
+  "scm": "github",
+  "categories": "users",
+  "timestamp": "2016-03-02T13:47:11.144Z",
+  "users": [
+    {
+      "name": "typhonjs-test2",
+      "id": 17558559,
+      "url": "https:\/\/github.com\/typhonjs-test2",
+      "avatar_url": "https:\/\/avatars.githubusercontent.com\/u\/17558559?v=3"
+    }
+  ]
+}
+```
+Returns `Promise` with an object hash containing `normalized` and `raw` entries.
+
+-----------
+<a name="getUserOwnsCredential"></a>
+####getUserOwnsCredential
+
+Returns a boolean indicating the GitHub username owns the given credential.
+
+@param {object}  options - Optional parameters.
+```
+(string) userName - A GitHub username to match against the given credential owner.
+
+(string) credential - A public access token for any GitHub user which limits the responses to the organizations
+                      and other query data that this particular user is a member of or has access to currently.
+```
+
+
+Returns `Promise` with a boolean result
