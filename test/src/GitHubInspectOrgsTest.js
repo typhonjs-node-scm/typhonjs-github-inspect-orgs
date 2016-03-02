@@ -19,12 +19,16 @@ describe('GitHubInspectOrgs', () =>
    // Loads owner / user public access tokens from environment variables or from `./token.owner` and `./token.user` in
    // the root directory.
    //
-   // For Travis CI this is the testing account public access token of typhonjs-test GitHub account. The associated
+   // For Travis CI this is the testing account public access token of `typhonjs-test` GitHub account. The associated
    // organizations are:
    // https://github.com/test-org-typhonjs
    // https://github.com/test-org-typhonjs2
    let ownerCredential = process.env.GITHUB_OWNER_TOKEN;
+
+   // The user credential is owned by `typhonjs-test2` GitHub account.
    let userCredential = process.env.GITHUB_USER_TOKEN;
+
+   const s_USER_NAME = 'typhonjs-test2';
 
    // If user ownerCredential is still undefined attempt to load from a local file `./owner.token`.
    if (typeof ownerCredential === 'undefined')
@@ -724,6 +728,37 @@ describe('GitHubInspectOrgs', () =>
          const jsonText = fs.readFileSync('./test/fixture/github-get-owners-rate-limit.json', 'utf-8');
 
          assert(JSON.stringify(data.normalized) === jsonText);
+      });
+   });
+
+   /**
+    * Test `getUserFromCredential`.
+    */
+   it('getUserFromCredential', () =>
+   {
+      return githubInspect.getUserFromCredential({ credential: userCredential }).then((data) =>
+      {
+         assert(typeof data === 'object');
+         assert(typeof data.normalized === 'object');
+         assert(typeof data.raw === 'object');
+
+         // Delete any variable data.
+         s_STRIP_VARIABLE_DATA(data.normalized);
+
+         const jsonText = fs.readFileSync('./test/fixture/github-get-user-from-credential.json', 'utf-8');
+
+         assert(JSON.stringify(data.normalized) === jsonText);
+      });
+   });
+
+   /**
+    * Test `getUserOwnsCredential`.
+    */
+   it('getUserOwnsCredential', () =>
+   {
+      return githubInspect.getUserOwnsCredential({ userName: s_USER_NAME, credential: userCredential }).then((result) =>
+      {
+         assert(result);
       });
    });
 });

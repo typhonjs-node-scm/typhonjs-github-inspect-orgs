@@ -3,7 +3,9 @@
 import GitHubAPI        from 'github';
 import request          from 'request';
 
-import createNormalized from './createNormalized';
+import GitHubNormalize  from './GitHubNormalize.js';
+
+const s_GITHUB_NORMALIZE = new GitHubNormalize();
 
 /**
  * GitHubInspectOrgs -- A NPM module providing compound GitHub queries spanning multiple organizations /
@@ -310,8 +312,8 @@ export default class GitHubInspectOrgs
             // Sort by org name.
             collaborators.sort((a, b) => { return a.login.localeCompare(b.login); });
 
-            return { normalized: createNormalized(['collaborators'], collaborators, this._optionsURL),
-             raw: collaborators };
+            return { normalized: s_GITHUB_NORMALIZE.normalizeCategories(['collaborators'], collaborators,
+             this._optionsURL), raw: collaborators };
          });
       });
    }
@@ -392,8 +394,8 @@ export default class GitHubInspectOrgs
             // Sort by user name.
             contributors.sort((a, b) => { return a.login.localeCompare(b.login); });
 
-            return { normalized: createNormalized(['contributors'], contributors, this._optionsURL),
-             raw: contributors };
+            return { normalized: s_GITHUB_NORMALIZE.normalizeCategories(['contributors'], contributors,
+             this._optionsURL), raw: contributors };
          });
       });
    }
@@ -466,7 +468,8 @@ export default class GitHubInspectOrgs
             // Sort by user name.
             members.sort((a, b) => { return a.login.localeCompare(b.login); });
 
-            return { normalized: createNormalized(['members'], members, this._optionsURL), raw: members };
+            return { normalized: s_GITHUB_NORMALIZE.normalizeCategories(['members'], members, this._optionsURL),
+             raw: members };
          });
       });
    }
@@ -560,8 +563,8 @@ export default class GitHubInspectOrgs
 
             return Promise.all(promises).then(() =>
             {
-               return normalize ? { normalized: createNormalized(['orgs', 'members'], orgs, this._optionsURL),
-                raw: orgs } : orgs;
+               return normalize ? { normalized: s_GITHUB_NORMALIZE.normalizeCategories(['orgs', 'members'], orgs,
+                this._optionsURL), raw: orgs } : orgs;
             });
          });
       });
@@ -686,8 +689,8 @@ export default class GitHubInspectOrgs
             {
                return Promise.all(innerPromises).then(() =>
                {
-                  return normalize ? { normalized: createNormalized(['orgs', 'repos'], orgs, optionsURL),
-                   raw: orgs } : orgs;
+                  return normalize ? { normalized: s_GITHUB_NORMALIZE.normalizeCategories(['orgs', 'repos'], orgs,
+                   optionsURL), raw: orgs } : orgs;
                });
             });
          });
@@ -820,8 +823,8 @@ export default class GitHubInspectOrgs
 
             return Promise.all(promises).then(() =>
             {
-               return normalize ? { normalized: createNormalized(['orgs', 'repos', 'collaborators'], orgs,
-                this._optionsURL), raw: orgs } : orgs;
+               return normalize ? { normalized: s_GITHUB_NORMALIZE.normalizeCategories(
+                ['orgs', 'repos', 'collaborators'], orgs, this._optionsURL), raw: orgs } : orgs;
             });
          });
       });
@@ -951,8 +954,8 @@ export default class GitHubInspectOrgs
 
             return Promise.all(promises).then(() =>
             {
-               return normalize ? { normalized: createNormalized(['orgs', 'repos', 'contributors'], orgs,
-                this._optionsURL), raw: orgs } : orgs;
+               return normalize ? { normalized: s_GITHUB_NORMALIZE.normalizeCategories(
+                ['orgs', 'repos', 'contributors'], orgs, this._optionsURL), raw: orgs } : orgs;
             });
          });
       });
@@ -1181,8 +1184,8 @@ export default class GitHubInspectOrgs
 
             return Promise.all(promises).then(() =>
             {
-               return normalize ? { normalized: createNormalized(['orgs', 'repos', 'stats'], orgs, this._optionsURL),
-                raw: orgs } : orgs;
+               return normalize ? { normalized: s_GITHUB_NORMALIZE.normalizeCategories(['orgs', 'repos', 'stats'],
+                orgs, this._optionsURL), raw: orgs } : orgs;
             });
          });
       });
@@ -1278,8 +1281,8 @@ export default class GitHubInspectOrgs
             // Sort by org name.
             results.sort((a, b) => { return a.login.localeCompare(b.login); });
 
-            return normalize ? { normalized: createNormalized(['orgs'], results, this._optionsURL), raw: results } :
-             results;
+            return normalize ? { normalized: s_GITHUB_NORMALIZE.normalizeCategories(['orgs'], results,
+             this._optionsURL), raw: results } : results;
          });
       });
    }
@@ -1379,8 +1382,8 @@ export default class GitHubInspectOrgs
 
             return Promise.all(promises).then(() =>
             {
-               return normalize ? { normalized: createNormalized(['orgs', 'teams'], orgs, this._optionsURL),
-                raw: orgs } : orgs;
+               return normalize ? { normalized: s_GITHUB_NORMALIZE.normalizeCategories(['orgs', 'teams'], orgs,
+                this._optionsURL), raw: orgs } : orgs;
             });
          });
       });
@@ -1490,8 +1493,8 @@ export default class GitHubInspectOrgs
 
             return Promise.all(promises).then(() =>
             {
-               return normalize ? { normalized: createNormalized(['orgs', 'teams', 'members'], orgs, this._optionsURL),
-                raw: orgs } : orgs;
+               return normalize ? { normalized: s_GITHUB_NORMALIZE.normalizeCategories(['orgs', 'teams', 'members'],
+                orgs, this._optionsURL), raw: orgs } : orgs;
             });
          });
       });
@@ -1583,7 +1586,8 @@ export default class GitHubInspectOrgs
             // Sort by owner name.
             owners.sort((a, b) => { return a.owner.localeCompare(b.owner); });
 
-            return { normalized: createNormalized(['owners', 'orgs'], owners, this._optionsURL), raw: owners };
+            return { normalized: s_GITHUB_NORMALIZE.normalizeCategories(['owners', 'orgs'], owners, this._optionsURL),
+             raw: owners };
          });
       });
    }
@@ -1658,7 +1662,8 @@ export default class GitHubInspectOrgs
          // Sort by owner name.
          owners.sort((a, b) => { return a.owner.localeCompare(b.owner); });
 
-         return { normalized: createNormalized(['owners', 'ratelimit'], owners, this._optionsURL), raw: owners };
+         return { normalized: s_GITHUB_NORMALIZE.normalizeCategories(['owners', 'ratelimit'], owners, this._optionsURL),
+          raw: owners };
       });
    }
 
@@ -1685,11 +1690,85 @@ export default class GitHubInspectOrgs
     */
    getOwners()
    {
-      const normalized = createNormalized(['owners'], this._organizations, this._optionsURL);
+      const normalized = s_GITHUB_NORMALIZE.normalizeCategories(['owners'], this._organizations, this._optionsURL);
 
       normalized.owners.sort((a, b) => { return a.name.localeCompare(b.name); });
 
       return Promise.resolve({ normalized, raw: normalized });
+   }
+
+   /**
+    * Returns a the GitHub username who owns the provided credential.
+    *
+    * @param {object}  options - Optional parameters.
+    * ```
+    * (string) credential - A public access token for any GitHub user which limits the responses to the organizations
+    *                       and other query data that this particular user is a member of or has access to currently.
+    * ```
+    *
+    * @returns {Promise} -- Always resolves; if authentication fails null is returned otherwise user JSON.
+    */
+   getUserFromCredential(options = {})
+   {
+      if (typeof options !== 'object')
+      {
+         throw new TypeError(`getUserFromCredential error: 'options' is not an 'object'.`);
+      }
+
+      if (typeof options.credential !== 'string')
+      {
+         throw new TypeError(`getUserFromCredential error: 'options.credential' is not a 'string'.`);
+      }
+
+      // If no explicit option to create normalized data is available default to true.
+      const normalize = typeof options.normalize === 'boolean' ? options.normalize : true;
+
+      return new Promise((resolve) =>
+      {
+         const github = s_AUTHENTICATE(this._githubAPI, options.credential);
+
+         github.user.get({}, (err, user) =>
+         {
+            if (err) { resolve(null); }
+            else
+            {
+               resolve(normalize ? { normalized: s_GITHUB_NORMALIZE.normalizeCategories(['users'], [user]),
+                raw: user } : user);
+            }
+         });
+      });
+   }
+
+   /**
+    * Returns a boolean indicating the GitHub username owns the given credential.
+    * @param {object}  options - Optional parameters.
+    * ```
+    * (string) userName - GitHub account name to match.
+    * (string) credential - A credential to match against ownership by `userName`.
+    * ```
+    * @returns {Promise}
+    */
+   getUserOwnsCredential(options = {})
+   {
+      if (typeof options !== 'object')
+      {
+         throw new TypeError(`getUserOwnsCredential error: 'options' is not an 'object'.`);
+      }
+
+      if (typeof options.userName !== 'string')
+      {
+         throw new TypeError(`getUserOwnsCredential error: 'options.userName' is not a 'string'.`);
+      }
+
+      if (typeof options.credential !== 'string')
+      {
+         throw new TypeError(`getUserOwnsCredential error: 'options.credential' is not a 'string'.`);
+      }
+
+      return this.getUserFromCredential(options).then((data) =>
+      {
+         return data !== null && data.normalized.users[0].name === options.userName;
+      });
    }
 }
 
@@ -1973,8 +2052,8 @@ const s_GET_ORG_REPOS_AUTH = (githubInspect, options = {}) =>
 
             return Promise.all(innerPromises).then(() =>
             {
-               return normalize ? { normalized: createNormalized(['orgs', 'repos'], orgs, githubInspect._optionsURL),
-                raw: orgs } : orgs;
+               return normalize ? { normalized: s_GITHUB_NORMALIZE.normalizeCategories(['orgs', 'repos'], orgs,
+                githubInspect._optionsURL), raw: orgs } : orgs;
             });
          });
       });
@@ -2072,7 +2151,7 @@ const s_GET_ORG_TEAMS_AUTH = (githubInspect, options = {}) =>
                   orgs[cntr].teams.sort((a, b) => { return a.name.localeCompare(b.name); });
                }
 
-               return normalize ? { normalized: createNormalized(['orgs', 'teams'], orgs, githubInspect._optionsURL),
+               return normalize ? { normalized: s_GITHUB_NORMALIZE.normalizeCategories(['orgs', 'teams'], orgs, githubInspect._optionsURL),
                 raw: orgs } : orgs;
             });
          });
@@ -2100,12 +2179,15 @@ const s_GET_ORGS_AUTH = (githubInspect, options = {}) =>
    // If no explicit option to create normalized data is available default to true.
    const normalize = typeof options.normalize === 'boolean' ? options.normalize : true;
 
+   // Prevents nested queries from generating intermediate normalized data.
+   options.normalize = false;
+
    // Fail early if rate limit is reached or user authentication fails.
    return s_IS_RATE_LIMIT_REACHED(githubInspect, options).then(() =>
    {
       return new Promise((resolve, reject) =>
       {
-         s_GET_USER(githubInspect, options.credential).then((user) =>
+         githubInspect.getUserFromCredential(options).then((user) =>
          {
             if (user === null)
             {
@@ -2149,40 +2231,12 @@ const s_GET_ORGS_AUTH = (githubInspect, options = {}) =>
                      // Sort by org name.
                      results.sort((a, b) => { return a.login.localeCompare(b.login); });
 
-                     resolve(normalize ? { normalized: createNormalized(['orgs'], results, githubInspect._optionsURL),
-                      raw: results } : results);
+                     resolve(normalize ? { normalized: s_GITHUB_NORMALIZE.normalizeCategories(['orgs'], results,
+                      githubInspect._optionsURL), raw: results } : results);
                   });
                });
             }
          });
-      });
-   });
-};
-
-/**
- * Returns a given GitHub user from the provided credential.
- *
- * @param {GitHubInspectOrgs}  githubInspect - An instance of GitHubInspectOrgs
- * @param {string}             credential - A public access token for any GitHub user which limits the responses to the
- *                                          organizations and other query data that this particular user is a member of
- *                                          or has access to currently.
- *
- * @returns {Promise} -- Always resolves; if authentication fails null is returned otherwise user JSON.
- */
-const s_GET_USER = (githubInspect, credential) =>
-{
-   if (typeof credential === 'object') { credential = credential.credential; }
-
-   if (typeof credential !== 'string') { throw new TypeError(`s_GET_USER error: 'credential' is not a 'string'.`); }
-
-   return new Promise((resolve) =>
-   {
-      const github = s_AUTHENTICATE(githubInspect._githubAPI, credential);
-
-      github.user.get({}, (err, res) =>
-      {
-         if (err) { resolve(null); }
-         else { resolve(res); }
       });
    });
 };

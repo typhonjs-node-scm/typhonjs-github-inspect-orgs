@@ -1,27 +1,65 @@
 /**
- * Normalizes raw GitHub query results.
- *
- * @param {Array<string>}  categories - Categories to normalize.
- * @param {Array<*>}       raw - Data to parse.
- * @param {object}         options - Optional parameters:
- * ```
- * (string) hostUrlPrefix - Sets the normalized GitHub host URL; default (https://github.com/).
- * ```
- *
- * @returns {{}}
+ * GitHubNormalize
  */
-export default function createNormalized(categories, raw, options = {})
+export default class GitHubNormalize
 {
-   if (!Array.isArray(categories)) { throw new TypeError(`createNormalized error: 'categories' is not an 'array'.`); }
-   if (typeof raw !== 'object') { throw new TypeError(`createNormalized error: 'raw' is not an 'object'.`); }
-   if (typeof options !== 'object') { throw new TypeError(`createNormalized error: 'options' is not an 'object'.`); }
-
-   return s_DEPTH_NORMALIZE(categories, raw, 0, options,
+   /**
+    * Normalizes raw GitHub query results.
+    *
+    * @param {Array<string>}  categories - Categories to normalize.
+    * @param {Array<*>}       raw - Data to parse.
+    * @param {object}         options - Optional parameters:
+    * ```
+    * (string) hostUrlPrefix - Sets the normalized GitHub host URL; default (https://github.com/).
+    * ```
+    *
+    * @returns {{}}
+    */
+   normalizeCategories(categories, raw, options = {})
    {
-      scm: 'github',
-      categories: categories.join(':'),
-      timestamp: new Date()
-   });
+      if (!Array.isArray(categories))
+      {
+         throw new TypeError(`normalizeCategories error: 'categories' is not an 'array'.`);
+      }
+
+      if (typeof raw !== 'object') { throw new TypeError(`normalizeCategories error: 'raw' is not an 'object'.`); }
+
+      if (typeof options !== 'object')
+      {
+         throw new TypeError(`normalizeCategories error: 'options' is not an 'object'.`);
+      }
+
+      return s_DEPTH_NORMALIZE(categories, raw, 0, options,
+      {
+         scm: 'github',
+         categories: categories.join(':'),
+         timestamp: new Date()
+      });
+   }
+
+   /**
+    * Returns a function that normalizes the given category of data.
+    *
+    * @param {string}   category - One of the following data categories to normalize:
+    * ```
+    * 'authors'
+    * 'collaborators'
+    * 'contributors'
+    * 'members'
+    * 'users'
+    * 'orgs'
+    * 'owners'
+    * 'ratelimit'
+    * 'repos'
+    * 'stats'
+    * 'teams'
+    * ```
+    * @returns {function}
+    */
+   getNormalizedFunction(category)
+   {
+      return s_GET_NORMALIZE_FUNCTION(category);
+   }
 }
 
 // Module private ---------------------------------------------------------------------------------------------------
@@ -45,7 +83,7 @@ const s_DEPTH_NORMALIZE = (categories, data, depth, options, root) =>
    const category = categories[depth];
    const nextCategory = categories.length > depth ? categories[depth + 1] : undefined;
 
-   const sortFunction = s_GET_NORMALIZE_FUNCTION(category);
+   const normalizeFunction = s_GET_NORMALIZE_FUNCTION(category);
 
    const normalized = root ? root : {};
 
@@ -53,7 +91,7 @@ const s_DEPTH_NORMALIZE = (categories, data, depth, options, root) =>
 
    for (let cntr = 0; cntr < data.length; cntr++)
    {
-      const results = sortFunction(data[cntr], options);
+      const results = normalizeFunction(data[cntr], options);
 
       if (nextCategory && Array.isArray(data[cntr][nextCategory]))
       {
@@ -69,45 +107,47 @@ const s_DEPTH_NORMALIZE = (categories, data, depth, options, root) =>
 
 const s_GET_NORMALIZE_FUNCTION = (category) =>
 {
-   let sortFunction;
+   let normalizeFunction;
 
    switch(category)
    {
+      case 'authors':
       case 'collaborators':
       case 'contributors':
       case 'members':
-         sortFunction = s_NORMALIZE_USER;
+      case 'users':
+         normalizeFunction = s_NORMALIZE_USER;
          break;
 
       case 'orgs':
-         sortFunction = s_NORMALIZE_ORG;
+         normalizeFunction = s_NORMALIZE_ORG;
          break;
 
       case 'owners':
-         sortFunction = s_NORMALIZE_OWNER;
+         normalizeFunction = s_NORMALIZE_OWNER;
          break;
 
       case 'ratelimit':
-         sortFunction = s_NORMALIZE_RATE_LIMIT;
+         normalizeFunction = s_NORMALIZE_RATE_LIMIT;
          break;
 
       case 'repos':
-         sortFunction = s_NORMALIZE_REPO;
+         normalizeFunction = s_NORMALIZE_REPO;
          break;
 
       case 'stats':
-         sortFunction = s_NORMALIZE_STATS;
+         normalizeFunction = s_NORMALIZE_STATS;
          break;
 
       case 'teams':
-         sortFunction = s_NORMALIZE_TEAM;
+         normalizeFunction = s_NORMALIZE_TEAM;
          break;
 
       default:
          throw new Error(`Unknown category: ${category}`);
    }
 
-   return sortFunction;
+   return normalizeFunction;
 };
 
 /**
