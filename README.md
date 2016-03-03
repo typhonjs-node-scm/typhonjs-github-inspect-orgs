@@ -120,7 +120,7 @@ GitHubInspectOrgs method summary:
 - [getOwnerOrgs](#getOwnerOrgs) - Returns all organizations by organization owner.
 - [getOwnerRateLimits](#getOwnerRateLimits) - Returns the current rate limits for all organization owners.
 - [getOwners](#getOwners) - Returns all organization owners.
-- [getUserFromCredential](#getUserFromCredential) - Returns a the GitHub username who owns the provided credential.
+- [getUserFromCredential](#getUserFromCredential) - Returns the GitHub user who owns the provided credential.
 - [getUserOwnsCredential](#getUserOwnsCredential) - Returns a boolean indicating the GitHub username owns the given credential.
 
 -----------
