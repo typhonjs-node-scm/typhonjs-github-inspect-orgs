@@ -1,6 +1,6 @@
 {
   "name": "typhonjs-github-inspect-orgs",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "homepage": "https://github.com/typhonjs-node-scm/typhonjs-github-inspect-orgs/",
   "description": "A NPM module providing compound GitHub queries for many-repo efforts such as TyphonJS and beyond.",
   "license": "MPL-2.0",
@@ -25,7 +25,7 @@
     "gulp": "^3.9.1",
     "typhonjs-config-eslint": "^0.3.0",
     "typhonjs-core-gulptasks": "^0.5.0",
-    "typhonjs-npm-build-test": "^0.0.8"
+    "typhonjs-npm-build-test": "^0.0.9"
   },
   "keywords": [
     "typhonjs",
