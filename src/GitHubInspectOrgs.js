@@ -81,7 +81,7 @@ const s_GITHUB_NORMALIZE = new GitHubNormalize();
  * The remaining base fields include one or more array of array structures depending on the requested data. Please
  * review the documentation for each method provided for an example JSON response.
  *
- * All methods take a hash of optional parameters. The two optional parameters that are supported include:
+ * Most methods take a hash of optional parameters. The two optional parameters that are supported include:
  * ```
  * (string)          credential - A public access token with `public_repo` and `read:org` permissions for any GitHub
  *                                user which limits the responses to the organizations and other query data that this
@@ -94,6 +94,9 @@ const s_GITHUB_NORMALIZE = new GitHubNormalize();
  *                               with JS repos in requesting `package.json`, but any file can be requested. Each entry
  *                               in the `repo_files` hash is also a hash containing `statusCode` of the response and
  *                               `body` containing the contents of the file requested.
+ *
+ * (boolean)         verbose -   Overrides GitHubInspectOrgs verbose setting logging any API request rejections
+ *                               usually oriented to credentials; default (GitHubInspectOrgs->_verbose).
  * ```
  *
  * Please review the method documentation for examples of the normalized results expected from each compound query.
