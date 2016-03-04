@@ -50,6 +50,7 @@ Additional optional parameters to configure GitHubInspectOrgs include:
 {string}    rawUrlPrefix - Sets the raw GitHub host URL; default ('https://raw.githubusercontent.com/').
 {integer}   timeout - TLS / HTTPS timeout for all requests in milliseconds ('120000' / 2 minutes).
 {string}    `user-agent` - User agent string necessary for GitHub API; default ('typhonjs-github-inspect-orgs').
+{boolean}   verbose - Logs any API request rejections usually oriented to credentials; default (false).
 ```
 
 To query all TyphonJS organizations use the following configuration:
@@ -92,6 +93,9 @@ All methods take a hash of optional parameters. The two optional parameters that
                               with JS repos in requesting `package.json`, but any file can be requested. Each entry
                               in the `repo_files` hash is also a hash containing `statusCode` of the response and
                               `body` containing the contents of the file requested.
+                               
+(boolean)         verbose -   Overrides GitHubInspectOrgs verbose setting logging any API request rejections
+                              usually oriented to credentials; default (GitHubInspectOrgs->_verbose).
 ```
 
 Please review the method documentation for examples of the normalized results expected from each compound query.
@@ -133,6 +137,9 @@ Returns all collaborators across all organizations.
 ```
 (string) credential - A public access token for any GitHub user which limits the responses to the organizations
                       and other query data that this particular user is a member of or has access to currently.
+
+(boolean)   verbose - Overrides GitHubInspectOrgs verbose setting logging any API request rejections usually 
+                      oriented to credentials; default (GitHubInspectOrgs->_verbose).
 ```
 
 The following is an abbreviated example response for the normalized data requested:
@@ -165,6 +172,9 @@ Returns all contributors across all organizations.
 ```
 (string) credential - A public access token for any GitHub user which limits the responses to the organizations
                       and other query data that this particular user is a member of or has access to currently.
+
+(boolean)   verbose - Overrides GitHubInspectOrgs verbose setting logging any API request rejections usually 
+                      oriented to credentials; default (GitHubInspectOrgs->_verbose).
 ```
 
 The following is an abbreviated example response for the normalized data requested:
@@ -197,6 +207,9 @@ Returns all organization members across all organizations.
 ```
 (string) credential - A public access token for any GitHub user which limits the responses to the organizations
                       and other query data that this particular user is a member of or has access to currently.
+
+(boolean)   verbose - Overrides GitHubInspectOrgs verbose setting logging any API request rejections usually 
+                      oriented to credentials; default (GitHubInspectOrgs->_verbose).
 ```
 
 The following is an abbreviated example response for the normalized data requested:
@@ -229,6 +242,9 @@ Returns all members by organization across all organizations.
 ```
 (string) credential - A public access token for any GitHub user which limits the responses to the organizations
                       and other query data that this particular user is a member of or has access to currently.
+
+(boolean)   verbose - Overrides GitHubInspectOrgs verbose setting logging any API request rejections usually 
+                      oriented to credentials; default (GitHubInspectOrgs->_verbose).
 ```
 
 The following is an abbreviated example response for the normalized data requested:
@@ -280,6 +296,9 @@ Returns all repos by organization across all organizations.
                               with JS repos in requesting `package.json`, but any file can be requested. Each
                               entry in the `repo_files` hash is also a hash containing `statusCode` of the
                               response and `body` containing the contents of the file requested.
+
+(boolean)         verbose -   Overrides GitHubInspectOrgs verbose setting logging any API request rejections
+                              usually oriented to credentials; default (GitHubInspectOrgs->_verbose).
 ```
 
 The following is an abbreviated example response for the normalized data requested:
@@ -340,6 +359,9 @@ Returns all collaborators by repo by organization across all organizations.
                               with JS repos in requesting `package.json`, but any file can be requested. Each
                               entry in the `repo_files` hash is also a hash containing `statusCode` of the
                               response and `body` containing the contents of the file requested.
+
+(boolean)         verbose -   Overrides GitHubInspectOrgs verbose setting logging any API request rejections
+                              usually oriented to credentials; default (GitHubInspectOrgs->_verbose).
 ```
 
 The following is an abbreviated example response for the normalized data requested:
@@ -409,6 +431,9 @@ Returns all contributors by repo by organization across all organizations.
                               with JS repos in requesting `package.json`, but any file can be requested. Each
                               entry in the `repo_files` hash is also a hash containing `statusCode` of the
                               response and `body` containing the contents of the file requested.
+
+(boolean)         verbose -   Overrides GitHubInspectOrgs verbose setting logging any API request rejections
+                              usually oriented to credentials; default (GitHubInspectOrgs->_verbose).
 ```
 
 The following is an abbreviated example response for the normalized data requested:
@@ -492,6 +517,9 @@ Optional:
                               with JS repos in requesting `package.json`, but any file can be requested. Each
                               entry in the `repo_files` hash is also a hash containing `statusCode` of the
                               response and `body` containing the contents of the file requested.
+
+(boolean)         verbose -   Overrides GitHubInspectOrgs verbose setting logging any API request rejections
+                              usually oriented to credentials; default (GitHubInspectOrgs->_verbose).
 ```
 
 Version 3.0 of the GitHub API is used for all queries. Please review the repo statistics documentation for
@@ -573,7 +601,8 @@ The following is an abbreviated example response for the normalized data request
                     "url": "https://github.com/typhonrt",
                     "avatar_url": "https://avatars.githubusercontent.com/u/311473?v=3"
                   }
-                }
+                },
+                // .... more data
               ],
               "stargazers": [
                 {
@@ -581,7 +610,8 @@ The following is an abbreviated example response for the normalized data request
                   "id": 311473,
                   "url": "https:\/\/github.com\/typhonrt",
                   "avatar_url": "https:\/\/avatars.githubusercontent.com\/u\/311473?v=3"
-                }
+                },
+                // .... more data
               ],
               "watchers": [
                 {
@@ -589,7 +619,8 @@ The following is an abbreviated example response for the normalized data request
                   "id": 311473,
                   "url": "https:\/\/github.com\/typhonrt",
                   "avatar_url": "https:\/\/avatars.githubusercontent.com\/u\/311473?v=3"
-                }
+                },
+                // .... more data
               ]
             }
           ]
@@ -614,6 +645,9 @@ Returns all organizations.
 ```
 (string) credential - A public access token for any GitHub user which limits the responses to the organizations
                       and other query data that this particular user is a member of or has access to currently.
+
+(boolean)   verbose - Overrides GitHubInspectOrgs verbose setting logging any API request rejections usually 
+                      oriented to credentials; default (GitHubInspectOrgs->_verbose).
 ```
 
 The following is an abbreviated example response for the normalized data requested:
@@ -647,6 +681,9 @@ Returns all teams by organization across all organizations.
 ```
 (string) credential - A public access token for any GitHub user which limits the responses to the organizations
                       and other query data that this particular user is a member of or has access to currently.
+
+(boolean)   verbose - Overrides GitHubInspectOrgs verbose setting logging any API request rejections usually 
+                      oriented to credentials; default (GitHubInspectOrgs->_verbose).
 ```
 
 The following is an abbreviated example response for the normalized data requested:
@@ -690,6 +727,9 @@ Returns all members by team by organization across all organizations.
 ```
 (string) credential - A public access token for any GitHub user which limits the responses to the organizations
                       and other query data that this particular user is a member of or has access to currently.
+
+(boolean)   verbose - Overrides GitHubInspectOrgs verbose setting logging any API request rejections usually 
+                      oriented to credentials; default (GitHubInspectOrgs->_verbose).
 ```
 
 The following is an abbreviated example response for the normalized data requested:
