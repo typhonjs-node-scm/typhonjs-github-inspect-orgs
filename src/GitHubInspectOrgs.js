@@ -49,6 +49,7 @@ const s_GITHUB_NORMALIZE = new GitHubNormalize();
  * {string}    rawUrlPrefix - Sets the raw GitHub host URL; default ('https://raw.githubusercontent.com/').
  * {integer}   timeout - TLS / HTTPS timeout for all requests in milliseconds ('120000' / 2 minutes).
  * {string}    `user-agent` - User agent string necessary for GitHub API; default ('typhonjs-github-inspect-orgs').
+ * {boolean}   verbose - Logs any API request rejections usually oriented to credentials; default (false).
  * ```
  *
  * To query all TyphonJS organizations use the following configuration:
@@ -128,6 +129,7 @@ export default class GitHubInspectOrgs
     * (string)    rawUrlPrefix - Sets the raw GitHub host URL; default ('https://raw.githubusercontent.com/').
     * (integer)   timeout - TLS / HTTPS timeout for all requests in milliseconds ('120000' / 2 minutes).
     * (integer)   `user-agent` - Custom user agent; default ('typhonjs-github-inspect-org').
+    * (boolean)   verbose - Logs any API request rejections usually oriented to credentials; default (false).
     * ```
     */
    constructor(options = {})
@@ -235,6 +237,14 @@ export default class GitHubInspectOrgs
        * @private
        */
       this._userAgent = { 'user-agent': options['user-agent'] || 'typhonjs-github-inspect-orgs' };
+
+      /**
+       * Stores whether verbose logging is enabled.
+       *
+       * @type {boolean}
+       * @private
+       */
+      this._verbose = typeof options.verbose === 'boolean' ? options.verbose : false;
    }
 
    /**
@@ -244,6 +254,9 @@ export default class GitHubInspectOrgs
     * ```
     * (string) credential - A public access token for any GitHub user which limits the responses to the organizations
     *                       and other query data that this particular user is a member of or has access to currently.
+    *
+    * (boolean)   verbose - Overrides GitHubInspectOrgs verbose setting logging any API request rejections usually
+    *                       oriented to credentials; default (GitHubInspectOrgs->_verbose).
     * ```
     *
     * The following is an abbreviated example response for the normalized data requested:
@@ -325,6 +338,9 @@ export default class GitHubInspectOrgs
     * ```
     * (string) credential - A public access token for any GitHub user which limits the responses to the organizations
     *                       and other query data that this particular user is a member of or has access to currently.
+    *
+    * (boolean)   verbose - Overrides GitHubInspectOrgs verbose setting logging any API request rejections usually
+    *                       oriented to credentials; default (GitHubInspectOrgs->_verbose).
     * ```
     *
     * The following is an abbreviated example response for the normalized data requested:
@@ -407,6 +423,9 @@ export default class GitHubInspectOrgs
     * ```
     * (string) credential - A public access token for any GitHub user which limits the responses to the organizations
     *                       and other query data that this particular user is a member of or has access to currently.
+    *
+    * (boolean)   verbose - Overrides GitHubInspectOrgs verbose setting logging any API request rejections usually
+    *                       oriented to credentials; default (GitHubInspectOrgs->_verbose).
     * ```
     *
     * The following is an abbreviated example response for the normalized data requested:
@@ -481,6 +500,9 @@ export default class GitHubInspectOrgs
     * ```
     * (string) credential - A public access token for any GitHub user which limits the responses to the organizations
     *                       and other query data that this particular user is a member of or has access to currently.
+    *
+    * (boolean)   verbose - Overrides GitHubInspectOrgs verbose setting logging any API request rejections usually
+    *                       oriented to credentials; default (GitHubInspectOrgs->_verbose).
     * ```
     *
     * The following is an abbreviated example response for the normalized data requested:
@@ -522,6 +544,8 @@ export default class GitHubInspectOrgs
 
       const githubAPI = this._githubAPI;
 
+      const verbose = typeof options.verbose === 'boolean' ? options.verbose : this._verbose;
+
       // Prevents nested queries from generating intermediate normalized data.
       options.normalize = false;
 
@@ -538,7 +562,7 @@ export default class GitHubInspectOrgs
 
                (function(org)
                {
-                  promises.push(new Promise((resolve, reject) =>
+                  promises.push(new Promise((resolve) =>
                   {
                      const github = s_AUTHENTICATE(githubAPI, org._credential);
 
@@ -546,7 +570,12 @@ export default class GitHubInspectOrgs
                      {
                         if (err)
                         {
-                           reject(err);
+                           if (verbose)
+                           {
+                              console.log(`Skipping organization '${org.login}'`
+                               + `as provided organization credential for owner '${org._owner}' does not have access.`);
+                           }
+                           resolve(err);
                         }
                         else
                         {
@@ -563,6 +592,9 @@ export default class GitHubInspectOrgs
 
             return Promise.all(promises).then(() =>
             {
+               // Strip any temporary private data stored in `orgs` when returning normalized data.
+               if (normalize) { s_STRIP_PRIVATE_ORGS_DATA(orgs); }
+
                return normalize ? { normalized: s_GITHUB_NORMALIZE.normalizeCategories(['orgs', 'members'], orgs,
                 this._optionsURL), raw: orgs } : orgs;
             });
@@ -586,6 +618,9 @@ export default class GitHubInspectOrgs
     *                               with JS repos in requesting `package.json`, but any file can be requested. Each
     *                               entry in the `repo_files` hash is also a hash containing `statusCode` of the
     *                               response and `body` containing the contents of the file requested.
+    *
+    * (boolean)         verbose -   Overrides GitHubInspectOrgs verbose setting logging any API request rejections
+    *                               usually oriented to credentials; default (GitHubInspectOrgs->_verbose).
     * ```
     *
     * The following is an abbreviated example response for the normalized data requested:
@@ -638,6 +673,8 @@ export default class GitHubInspectOrgs
       const optionsURL = this._optionsURL;
       const userAgent = this._userAgent;
 
+      const verbose = typeof options.verbose === 'boolean' ? options.verbose : this._verbose;
+
       // Fail early if rate limit is reached or user authentication fails.
       return s_IS_RATE_LIMIT_REACHED(this, options).then(() =>
       {
@@ -658,7 +695,7 @@ export default class GitHubInspectOrgs
 
                (function(org)
                {
-                  promises.push(new Promise((resolve, reject) =>
+                  promises.push(new Promise((resolve) =>
                   {
                      const github = s_AUTHENTICATE(githubAPI, org._credential);
 
@@ -666,7 +703,12 @@ export default class GitHubInspectOrgs
                      {
                         if (err)
                         {
-                           reject(err);
+                           if (verbose)
+                           {
+                              console.log(`Skipping organization '${org.login}'`
+                               + `as provided organization credential for owner '${org._owner}' does not have access.`);
+                           }
+                           resolve(err);
                         }
                         else
                         {
@@ -689,6 +731,9 @@ export default class GitHubInspectOrgs
             {
                return Promise.all(innerPromises).then(() =>
                {
+                  // Strip any temporary private data stored in `orgs` when returning normalized data.
+                  if (normalize) { s_STRIP_PRIVATE_ORGS_DATA(orgs); }
+
                   return normalize ? { normalized: s_GITHUB_NORMALIZE.normalizeCategories(['orgs', 'repos'], orgs,
                    optionsURL), raw: orgs } : orgs;
                });
@@ -713,6 +758,9 @@ export default class GitHubInspectOrgs
     *                               with JS repos in requesting `package.json`, but any file can be requested. Each
     *                               entry in the `repo_files` hash is also a hash containing `statusCode` of the
     *                               response and `body` containing the contents of the file requested.
+    *
+    * (boolean)         verbose -   Overrides GitHubInspectOrgs verbose setting logging any API request rejections
+    *                               usually oriented to credentials; default (GitHubInspectOrgs->_verbose).
     * ```
     *
     * The following is an abbreviated example response for the normalized data requested:
@@ -775,6 +823,8 @@ export default class GitHubInspectOrgs
 
       const githubAPI = this._githubAPI;
 
+      const verbose = typeof options.verbose === 'boolean' ? options.verbose : this._verbose;
+
       // Prevents nested queries from generating intermediate normalized data.
       options.normalize = false;
 
@@ -803,8 +853,12 @@ export default class GitHubInspectOrgs
                         {
                            if (err)
                            {
-                              console.log(`Skipping repo '${repo.name}' as user must have push access to view
-                               collaborators.`);
+                              if (verbose)
+                              {
+                                 console.log(`Skipping repo '${repo.name}'`
+                                  + `as provided organization credential for owner '${org._owner}'`
+                                   + ' does not have access.');
+                              }
                               resolve(err);
                            }
                            else
@@ -823,6 +877,9 @@ export default class GitHubInspectOrgs
 
             return Promise.all(promises).then(() =>
             {
+               // Strip any temporary private data stored in `orgs` when returning normalized data.
+               if (normalize) { s_STRIP_PRIVATE_ORGS_DATA(orgs); }
+
                return normalize ? { normalized: s_GITHUB_NORMALIZE.normalizeCategories(
                 ['orgs', 'repos', 'collaborators'], orgs, this._optionsURL), raw: orgs } : orgs;
             });
@@ -846,6 +903,9 @@ export default class GitHubInspectOrgs
     *                               with JS repos in requesting `package.json`, but any file can be requested. Each
     *                               entry in the `repo_files` hash is also a hash containing `statusCode` of the
     *                               response and `body` containing the contents of the file requested.
+    *
+    * (boolean)         verbose -   Overrides GitHubInspectOrgs verbose setting logging any API request rejections
+    *                               usually oriented to credentials; default (GitHubInspectOrgs->_verbose).
     * ```
     *
     * The following is an abbreviated example response for the normalized data requested:
@@ -954,6 +1014,9 @@ export default class GitHubInspectOrgs
 
             return Promise.all(promises).then(() =>
             {
+               // Strip any temporary private data stored in `orgs` when returning normalized data.
+               if (normalize) { s_STRIP_PRIVATE_ORGS_DATA(orgs); }
+
                return normalize ? { normalized: s_GITHUB_NORMALIZE.normalizeCategories(
                 ['orgs', 'repos', 'contributors'], orgs, this._optionsURL), raw: orgs } : orgs;
             });
@@ -991,6 +1054,9 @@ export default class GitHubInspectOrgs
     *                               with JS repos in requesting `package.json`, but any file can be requested. Each
     *                               entry in the `repo_files` hash is also a hash containing `statusCode` of the
     *                               response and `body` containing the contents of the file requested.
+    *
+    * (boolean)         verbose -   Overrides GitHubInspectOrgs verbose setting logging any API request rejections
+    *                               usually oriented to credentials; default (GitHubInspectOrgs->_verbose).
     * ```
     *
     * Version 3.0 of the GitHub API is used for all queries. Please review the repo statistics documentation for
@@ -1072,7 +1138,8 @@ export default class GitHubInspectOrgs
     *                     "url": "https://github.com/typhonrt",
     *                     "avatar_url": "https://avatars.githubusercontent.com/u/311473?v=3"
     *                   }
-    *                 }
+    *                 },
+    *                 // .... more data
     *               ],
     *               "stargazers": [
     *                 {
@@ -1080,7 +1147,8 @@ export default class GitHubInspectOrgs
     *                   "id": 311473,
     *                   "url": "https:\/\/github.com\/typhonrt",
     *                   "avatar_url": "https:\/\/avatars.githubusercontent.com\/u\/311473?v=3"
-    *                 }
+    *                 },
+    *                 // .... more data
     *               ],
     *               "watchers": [
     *                 {
@@ -1088,7 +1156,8 @@ export default class GitHubInspectOrgs
     *                   "id": 311473,
     *                   "url": "https:\/\/github.com\/typhonrt",
     *                   "avatar_url": "https:\/\/avatars.githubusercontent.com\/u\/311473?v=3"
-    *                 }
+    *                 },
+    *                 // .... more data
     *               ]
     *             }
     *           ]
@@ -1161,7 +1230,10 @@ export default class GitHubInspectOrgs
 
                               github.repos[functionName]({ repo: repo.name, user: org.login }, (err, results) =>
                               {
-                                 if (err) { reject(err); }
+                                 if (err)
+                                 {
+                                    reject(err);
+                                 }
                                  else
                                  {
                                     // GitHub doesn't have cached results, so setting _resultsPending true indicates
@@ -1184,6 +1256,9 @@ export default class GitHubInspectOrgs
 
             return Promise.all(promises).then(() =>
             {
+               // Strip any temporary private data stored in `orgs` when returning normalized data.
+               if (normalize) { s_STRIP_PRIVATE_ORGS_DATA(orgs); }
+
                return normalize ? { normalized: s_GITHUB_NORMALIZE.normalizeCategories(['orgs', 'repos', 'stats'],
                 orgs, this._optionsURL), raw: orgs } : orgs;
             });
@@ -1198,6 +1273,9 @@ export default class GitHubInspectOrgs
     * ```
     * (string) credential - A public access token for any GitHub user which limits the responses to the organizations
     *                       and other query data that this particular user is a member of or has access to currently.
+    *
+    * (boolean)   verbose - Overrides GitHubInspectOrgs verbose setting logging any API request rejections usually
+    *                       oriented to credentials; default (GitHubInspectOrgs->_verbose).
     * ```
     *
     * The following is an abbreviated example response for the normalized data requested:
@@ -1230,6 +1308,8 @@ export default class GitHubInspectOrgs
 
       const githubAPI = this._githubAPI;
 
+      const verbose = typeof options.verbose === 'boolean' ? options.verbose : this._verbose;
+
       // Fail early if rate limit is reached or user authentication fails.
       return s_IS_RATE_LIMIT_REACHED(this, options).then(() =>
       {
@@ -1245,7 +1325,7 @@ export default class GitHubInspectOrgs
             {
                const orgCredential = organization.credential;
 
-               promises.push(new Promise((resolve, reject) =>
+               promises.push(new Promise((resolve) =>
                {
                   const github = s_AUTHENTICATE(githubAPI, orgCredential);
 
@@ -1253,7 +1333,13 @@ export default class GitHubInspectOrgs
                   {
                      if (err)
                      {
-                        reject(err);
+                        if (verbose)
+                        {
+                           console.log(`Skipping organization '${organization.login}'`
+                            + ` as provided organization credential for owner '${organization.owner}'`
+                             + ' does not have access.');
+                        }
+                        resolve(err);
                      }
                      else
                      {
@@ -1265,6 +1351,7 @@ export default class GitHubInspectOrgs
                            if (typeof org.login === 'string' && organization.regex.test(org.login))
                            {
                               org._credential = orgCredential;
+                              org._owner = organization.owner;
                               results.push(org);
                            }
                         }
@@ -1281,6 +1368,9 @@ export default class GitHubInspectOrgs
             // Sort by org name.
             results.sort((a, b) => { return a.login.localeCompare(b.login); });
 
+            // Strip any temporary private data stored in `orgs` when returning normalized data.
+            if (normalize) { s_STRIP_PRIVATE_ORGS_DATA(results); }
+
             return normalize ? { normalized: s_GITHUB_NORMALIZE.normalizeCategories(['orgs'], results,
              this._optionsURL), raw: results } : results;
          });
@@ -1294,6 +1384,9 @@ export default class GitHubInspectOrgs
     * ```
     * (string) credential - A public access token for any GitHub user which limits the responses to the organizations
     *                       and other query data that this particular user is a member of or has access to currently.
+    *
+    * (boolean)   verbose - Overrides GitHubInspectOrgs verbose setting logging any API request rejections usually
+    *                       oriented to credentials; default (GitHubInspectOrgs->_verbose).
     * ```
     *
     * The following is an abbreviated example response for the normalized data requested:
@@ -1336,6 +1429,8 @@ export default class GitHubInspectOrgs
 
       const githubAPI = this._githubAPI;
 
+      const verbose = typeof options.verbose === 'boolean' ? options.verbose : this._verbose;
+
       // Fail early if rate limit is reached or user authentication fails.
       return s_IS_RATE_LIMIT_REACHED(this, options).then(() =>
       {
@@ -1359,21 +1454,25 @@ export default class GitHubInspectOrgs
                   {
                      const github = s_AUTHENTICATE(githubAPI, org._credential);
 
-                     github.orgs.getTeams({ org: org.login }, (err, res) =>
+                     github.orgs.getTeams({ org: org.login }, (err, result) =>
                      {
                         if (err)
                         {
-                           console.log(
-                            `Skipping organization '${org.login}' as user does not have access to view teams.`);
+                           if (verbose)
+                           {
+                              console.log(`Skipping organization '${org.login}'`
+                               + ` as provided organization credential for owner '${org._owner}'`
+                                + ' does not have access.');
+                           }
                            resolve(err);
                         }
                         else
                         {
                            // Sort by team name.
-                           res.sort((a, b) => { return a.name.localeCompare(b.name); });
+                           result.sort((a, b) => { return a.name.localeCompare(b.name); });
 
-                           org.teams = res;
-                           resolve(res);
+                           org.teams = result;
+                           resolve(result);
                         }
                      });
                   }));
@@ -1382,6 +1481,15 @@ export default class GitHubInspectOrgs
 
             return Promise.all(promises).then(() =>
             {
+               // Remove any organization entries that didn't resolve a `teams` entry.
+               for (let cntr = orgs.length; --cntr >= 0;)
+               {
+                  if (typeof orgs[cntr].teams === 'undefined') { orgs.splice(cntr, 1); }
+               }
+
+               // Strip any temporary private data stored in `orgs` when returning normalized data.
+               if (normalize) { s_STRIP_PRIVATE_ORGS_DATA(orgs); }
+
                return normalize ? { normalized: s_GITHUB_NORMALIZE.normalizeCategories(['orgs', 'teams'], orgs,
                 this._optionsURL), raw: orgs } : orgs;
             });
@@ -1396,6 +1504,9 @@ export default class GitHubInspectOrgs
     * ```
     * (string) credential - A public access token for any GitHub user which limits the responses to the organizations
     *                       and other query data that this particular user is a member of or has access to currently.
+    *
+    * (boolean)   verbose - Overrides GitHubInspectOrgs verbose setting logging any API request rejections usually
+    *                       oriented to credentials; default (GitHubInspectOrgs->_verbose).
     * ```
     *
     * The following is an abbreviated example response for the normalized data requested:
@@ -1493,6 +1604,9 @@ export default class GitHubInspectOrgs
 
             return Promise.all(promises).then(() =>
             {
+               // Strip any temporary private data stored in `orgs` when returning normalized data.
+               if (normalize) { s_STRIP_PRIVATE_ORGS_DATA(orgs); }
+
                return normalize ? { normalized: s_GITHUB_NORMALIZE.normalizeCategories(['orgs', 'teams', 'members'],
                 orgs, this._optionsURL), raw: orgs } : orgs;
             });
@@ -1547,13 +1661,13 @@ export default class GitHubInspectOrgs
             {
                const orgCredential = organization.credential;
 
-               promises.push(new Promise((resolve, reject) =>
+               promises.push(new Promise((resolve) =>
                {
                   const github = s_AUTHENTICATE(githubAPI, orgCredential);
 
                   github.orgs.getFromUser({ user: organization.owner }, (err, orgs) =>
                   {
-                     if (err) { reject(err); }
+                     if (err) { resolve(err); }
                      else
                      {
                         const results = [];
@@ -1571,6 +1685,9 @@ export default class GitHubInspectOrgs
 
                         // Sort by org name.
                         results.sort((a, b) => { return a.login.localeCompare(b.login); });
+
+                        // Strip any temporary private data stored in `orgs` when returning normalized data.
+                        s_STRIP_PRIVATE_ORGS_DATA(results);
 
                         owners.push({ owner: organization.owner, orgs: results });
 
@@ -1646,7 +1763,10 @@ export default class GitHubInspectOrgs
 
                github.misc.rateLimit({}, (err, result) =>
                {
-                  if (err) { reject(err); }
+                  if (err)
+                  {
+                     reject(err);
+                  }
                   else
                   {
                      owners.push({ owner: organization.owner, ratelimit: [result] });
@@ -1983,6 +2103,8 @@ const s_GET_ORG_REPOS_AUTH = (githubInspect, options = {}) =>
    // If no explicit option to create normalized data is available default to true.
    const normalize = typeof options.normalize === 'boolean' ? options.normalize : true;
 
+   const verbose = typeof options.verbose === 'boolean' ? options.verbose : githubInspect._verbose;
+
    // Prevents nested queries from generating intermediate normalized data.
    options.normalize = false;
 
@@ -2006,7 +2128,7 @@ const s_GET_ORG_REPOS_AUTH = (githubInspect, options = {}) =>
 
                (function(org, team)
                {
-                  promises.push(new Promise((resolve, reject) =>
+                  promises.push(new Promise((resolve) =>
                   {
                      const github = s_AUTHENTICATE(githubInspect._githubAPI, org._credential);
 
@@ -2014,7 +2136,12 @@ const s_GET_ORG_REPOS_AUTH = (githubInspect, options = {}) =>
                      {
                         if (err)
                         {
-                           reject(err);
+                           if (verbose)
+                           {
+                              console.log(`Skipping team '${team.name}'`
+                               + `as provided organization credential for owner '${org._owner}' does not have access.`);
+                           }
+                           resolve(err);
                         }
                         else
                         {
@@ -2052,6 +2179,9 @@ const s_GET_ORG_REPOS_AUTH = (githubInspect, options = {}) =>
 
             return Promise.all(innerPromises).then(() =>
             {
+               // Strip any temporary private data stored in `orgs` when returning normalized data.
+               if (normalize) { s_STRIP_PRIVATE_ORGS_DATA(orgs); }
+
                return normalize ? { normalized: s_GITHUB_NORMALIZE.normalizeCategories(['orgs', 'repos'], orgs,
                 githubInspect._optionsURL), raw: orgs } : orgs;
             });
@@ -2078,6 +2208,8 @@ const s_GET_ORG_TEAMS_AUTH = (githubInspect, options = {}) =>
    // If no explicit option to create normalized data is available default to true.
    const normalize = typeof options.normalize === 'boolean' ? options.normalize : true;
 
+   const verbose = typeof options.verbose === 'boolean' ? options.verbose : githubInspect._verbose;
+
    // Prevents nested queries from generating intermediate normalized data.
    options.normalize = false;
 
@@ -2096,7 +2228,7 @@ const s_GET_ORG_TEAMS_AUTH = (githubInspect, options = {}) =>
 
             (function(org)
             {
-               promises.push(new Promise((resolve, reject) =>
+               promises.push(new Promise((resolve) =>
                {
                   const github = s_AUTHENTICATE(githubInspect._githubAPI, org._credential);
 
@@ -2104,7 +2236,12 @@ const s_GET_ORG_TEAMS_AUTH = (githubInspect, options = {}) =>
                   {
                      if (err)
                      {
-                        reject(err);
+                        if (verbose)
+                        {
+                           console.log(`Skipping organization '${org.login}'`
+                            + ` as provided organization credential for owner '${org._owner}' does not have access.`);
+                        }
+                        resolve(err);
                      }
                      else
                      {
@@ -2121,7 +2258,7 @@ const s_GET_ORG_TEAMS_AUTH = (githubInspect, options = {}) =>
                                  github.orgs.getTeamMember(
                                  {
                                     org: org.login,
-                                    user: org.auth_user.login,
+                                    user: org._auth_user.login,
                                     id: team.id
                                  },
                                  (err) =>
@@ -2151,8 +2288,11 @@ const s_GET_ORG_TEAMS_AUTH = (githubInspect, options = {}) =>
                   orgs[cntr].teams.sort((a, b) => { return a.name.localeCompare(b.name); });
                }
 
-               return normalize ? { normalized: s_GITHUB_NORMALIZE.normalizeCategories(['orgs', 'teams'], orgs, githubInspect._optionsURL),
-                raw: orgs } : orgs;
+               // Strip any temporary private data stored in `orgs` when returning normalized data.
+               if (normalize) { s_STRIP_PRIVATE_ORGS_DATA(orgs); }
+
+               return normalize ? { normalized: s_GITHUB_NORMALIZE.normalizeCategories(['orgs', 'teams'], orgs,
+                githubInspect._optionsURL), raw: orgs } : orgs;
             });
          });
       });
@@ -2208,18 +2348,19 @@ const s_GET_ORGS_AUTH = (githubInspect, options = {}) =>
 
                      (function(org)
                      {
-                        const github = s_AUTHENTICATE(githubInspect._githubAPI, org._credential);
-
                         promises.push(new Promise((innerResolve) =>
                         {
-                           github.orgs.getMember({ org: org.login, user: user.login }, (err) =>
+                           const github = s_AUTHENTICATE(githubInspect._githubAPI, org._credential);
+
+                           github.orgs.getMember({ org: org.login, user: user.login }, (err, result) =>
                            {
-                              if (err) { /* .. */ }
-                              else
+                              if (result && result.meta && result.meta.status &&
+                               result.meta.status === '204 No Content')
                               {
-                                 org.auth_user = user;
+                                 org._auth_user = user;
                                  results.push(org);
                               }
+
                               innerResolve();   // Required for Promise.all[] to resolve below.
                            });
                         }));
@@ -2230,6 +2371,9 @@ const s_GET_ORGS_AUTH = (githubInspect, options = {}) =>
                   {
                      // Sort by org name.
                      results.sort((a, b) => { return a.login.localeCompare(b.login); });
+
+                     // Strip any temporary private data stored in `orgs` when returning normalized data.
+                     if (normalize) { s_STRIP_PRIVATE_ORGS_DATA(results); }
 
                      resolve(normalize ? { normalized: s_GITHUB_NORMALIZE.normalizeCategories(['orgs'], results,
                       githubInspect._optionsURL), raw: results } : results);
@@ -2305,4 +2449,24 @@ const s_IS_RATE_LIMIT_REACHED = (githubInspect, options = {}) =>
          resolve(false);
       });
    });
+};
+
+/**
+ * Strips any temporary private entries starting with `_` from all organization entries.
+ *
+ * @param {Array} orgs - Array of raw organization data.
+ */
+const s_STRIP_PRIVATE_ORGS_DATA = (orgs) =>
+{
+   for (let cntr = 0; cntr < orgs.length; cntr++)
+   {
+      const org = orgs[cntr];
+      const keys = Object.keys(org);
+
+      for (let cntr2 = 0; cntr2 < keys.length; cntr2++)
+      {
+         const key = keys[cntr2];
+         if (key.startsWith('_')) { delete org[key]; }
+      }
+   }
 };

@@ -75,9 +75,11 @@ describe('GitHubInspectOrgs', () =>
          // Delete any variable data.
          s_STRIP_VARIABLE_DATA(data.normalized);
 
-         const jsonText = fs.readFileSync('./test/fixture/github-get-collaborators-all.json', 'utf-8');
+         // Unless generating test data the body of s_DATA_WRITE is not executed.
+         s_DATA_WRITE(data.normalized, 'github-get-collaborators-all');
 
-         assert(JSON.stringify(data.normalized) === jsonText);
+         // Usually data is being tested.
+         s_DATA_TEST(data.normalized, 'github-get-collaborators-all');
       });
    });
 
@@ -95,9 +97,11 @@ describe('GitHubInspectOrgs', () =>
          // Delete any variable data.
          s_STRIP_VARIABLE_DATA(data.normalized);
 
-         const jsonText = fs.readFileSync('./test/fixture/github-get-collaborators-user.json', 'utf-8');
+         // Unless generating test data the body of s_DATA_WRITE is not executed.
+         s_DATA_WRITE(data.normalized, 'github-get-collaborators-user');
 
-         assert(JSON.stringify(data.normalized) === jsonText);
+         // Usually data is being tested.
+         s_DATA_TEST(data.normalized, 'github-get-collaborators-user');
       });
    });
 
@@ -115,9 +119,11 @@ describe('GitHubInspectOrgs', () =>
          // Delete any variable data.
          s_STRIP_VARIABLE_DATA(data.normalized);
 
-         const jsonText = fs.readFileSync('./test/fixture/github-get-contributors-all.json', 'utf-8');
+         // Unless generating test data the body of s_DATA_WRITE is not executed.
+         s_DATA_WRITE(data.normalized, 'github-get-contributors-all');
 
-         assert(JSON.stringify(data.normalized) === jsonText);
+         // Usually data is being tested.
+         s_DATA_TEST(data.normalized, 'github-get-contributors-all');
       });
    });
 
@@ -135,9 +141,11 @@ describe('GitHubInspectOrgs', () =>
          // Delete any variable data.
          s_STRIP_VARIABLE_DATA(data.normalized);
 
-         const jsonText = fs.readFileSync('./test/fixture/github-get-contributors-user.json', 'utf-8');
+         // Unless generating test data the body of s_DATA_WRITE is not executed.
+         s_DATA_WRITE(data.normalized, 'github-get-contributors-user');
 
-         assert(JSON.stringify(data.normalized) === jsonText);
+         // Usually data is being tested.
+         s_DATA_TEST(data.normalized, 'github-get-contributors-user');
       });
    });
 
@@ -155,9 +163,11 @@ describe('GitHubInspectOrgs', () =>
          // Delete any variable data.
          s_STRIP_VARIABLE_DATA(data.normalized);
 
-         const jsonText = fs.readFileSync('./test/fixture/github-get-members-all.json', 'utf-8');
+         // Unless generating test data the body of s_DATA_WRITE is not executed.
+         s_DATA_WRITE(data.normalized, 'github-get-members-all');
 
-         assert(JSON.stringify(data.normalized) === jsonText);
+         // Usually data is being tested.
+         s_DATA_TEST(data.normalized, 'github-get-members-all');
       });
    });
 
@@ -175,9 +185,11 @@ describe('GitHubInspectOrgs', () =>
          // Delete any variable data.
          s_STRIP_VARIABLE_DATA(data.normalized);
 
-         const jsonText = fs.readFileSync('./test/fixture/github-get-members-user.json', 'utf-8');
+         // Unless generating test data the body of s_DATA_WRITE is not executed.
+         s_DATA_WRITE(data.normalized, 'github-get-members-user');
 
-         assert(JSON.stringify(data.normalized) === jsonText);
+         // Usually data is being tested.
+         s_DATA_TEST(data.normalized, 'github-get-members-user');
       });
    });
 
@@ -195,9 +207,11 @@ describe('GitHubInspectOrgs', () =>
          // Delete any variable data.
          s_STRIP_VARIABLE_DATA(data.normalized);
 
-         const jsonText = fs.readFileSync('./test/fixture/github-get-org-members-all.json', 'utf-8');
+         // Unless generating test data the body of s_DATA_WRITE is not executed.
+         s_DATA_WRITE(data.normalized, 'github-get-org-members-all');
 
-         assert(JSON.stringify(data.normalized) === jsonText);
+         // Usually data is being tested.
+         s_DATA_TEST(data.normalized, 'github-get-org-members-all');
       });
    });
 
@@ -215,9 +229,11 @@ describe('GitHubInspectOrgs', () =>
          // Delete any variable data.
          s_STRIP_VARIABLE_DATA(data.normalized);
 
-         const jsonText = fs.readFileSync('./test/fixture/github-get-org-members-user.json', 'utf-8');
+         // Unless generating test data the body of s_DATA_WRITE is not executed.
+         s_DATA_WRITE(data.normalized, 'github-get-org-members-user');
 
-         assert(JSON.stringify(data.normalized) === jsonText);
+         // Usually data is being tested.
+         s_DATA_TEST(data.normalized, 'github-get-org-members-user');
       });
    });
 
@@ -235,9 +251,11 @@ describe('GitHubInspectOrgs', () =>
          // Delete any variable data.
          s_STRIP_VARIABLE_DATA(data.normalized);
 
-         const jsonText = fs.readFileSync('./test/fixture/github-get-org-repo-collaborators-all.json', 'utf-8');
+         // Unless generating test data the body of s_DATA_WRITE is not executed.
+         s_DATA_WRITE(data.normalized, 'github-get-org-repo-collaborators-all');
 
-         assert(JSON.stringify(data.normalized) === jsonText);
+         // Usually data is being tested.
+         s_DATA_TEST(data.normalized, 'github-get-org-repo-collaborators-all');
       });
    });
 
@@ -255,10 +273,11 @@ describe('GitHubInspectOrgs', () =>
          // Delete any variable data.
          s_STRIP_VARIABLE_DATA(data.normalized);
 
-         const jsonText = fs.readFileSync(
-          './test/fixture/github-get-org-repo-collaborators-all-with-files.json', 'utf-8');
+         // Unless generating test data the body of s_DATA_WRITE is not executed.
+         s_DATA_WRITE(data.normalized, 'github-get-org-repo-collaborators-all-with-files');
 
-         assert(JSON.stringify(data.normalized) === jsonText);
+         // Usually data is being tested.
+         s_DATA_TEST(data.normalized, 'github-get-org-repo-collaborators-all-with-files');
       });
    });
 
@@ -276,9 +295,11 @@ describe('GitHubInspectOrgs', () =>
          // Delete any variable data.
          s_STRIP_VARIABLE_DATA(data.normalized);
 
-         const jsonText = fs.readFileSync('./test/fixture/github-get-org-repo-collaborators-user.json', 'utf-8');
+         // Unless generating test data the body of s_DATA_WRITE is not executed.
+         s_DATA_WRITE(data.normalized, 'github-get-org-repo-collaborators-user');
 
-         assert(JSON.stringify(data.normalized) === jsonText);
+         // Usually data is being tested.
+         s_DATA_TEST(data.normalized, 'github-get-org-repo-collaborators-user');
       });
    });
 
@@ -297,10 +318,11 @@ describe('GitHubInspectOrgs', () =>
          // Delete any variable data.
          s_STRIP_VARIABLE_DATA(data.normalized);
 
-         const jsonText = fs.readFileSync(
-          './test/fixture/github-get-org-repo-collaborators-user-with-files.json', 'utf-8');
+         // Unless generating test data the body of s_DATA_WRITE is not executed.
+         s_DATA_WRITE(data.normalized, 'github-get-org-repo-collaborators-user-with-files');
 
-         assert(JSON.stringify(data.normalized) === jsonText);
+         // Usually data is being tested.
+         s_DATA_TEST(data.normalized, 'github-get-org-repo-collaborators-user-with-files');
       });
    });
 
@@ -318,9 +340,11 @@ describe('GitHubInspectOrgs', () =>
          // Delete any variable data.
          s_STRIP_VARIABLE_DATA(data.normalized);
 
-         const jsonText = fs.readFileSync('./test/fixture/github-get-org-repo-contributors-all.json', 'utf-8');
+         // Unless generating test data the body of s_DATA_WRITE is not executed.
+         s_DATA_WRITE(data.normalized, 'github-get-org-repo-contributors-all');
 
-         assert(JSON.stringify(data.normalized) === jsonText);
+         // Usually data is being tested.
+         s_DATA_TEST(data.normalized, 'github-get-org-repo-contributors-all');
       });
    });
 
@@ -338,10 +362,11 @@ describe('GitHubInspectOrgs', () =>
          // Delete any variable data.
          s_STRIP_VARIABLE_DATA(data.normalized);
 
-         const jsonText = fs.readFileSync(
-          './test/fixture/github-get-org-repo-contributors-all-with-files.json', 'utf-8');
+         // Unless generating test data the body of s_DATA_WRITE is not executed.
+         s_DATA_WRITE(data.normalized, 'github-get-org-repo-contributors-all-with-files');
 
-         assert(JSON.stringify(data.normalized) === jsonText);
+         // Usually data is being tested.
+         s_DATA_TEST(data.normalized, 'github-get-org-repo-contributors-all-with-files');
       });
    });
 
@@ -359,9 +384,11 @@ describe('GitHubInspectOrgs', () =>
          // Delete any variable data.
          s_STRIP_VARIABLE_DATA(data.normalized);
 
-         const jsonText = fs.readFileSync('./test/fixture/github-get-org-repo-contributors-user.json', 'utf-8');
+         // Unless generating test data the body of s_DATA_WRITE is not executed.
+         s_DATA_WRITE(data.normalized, 'github-get-org-repo-contributors-user');
 
-         assert(JSON.stringify(data.normalized) === jsonText);
+         // Usually data is being tested.
+         s_DATA_TEST(data.normalized, 'github-get-org-repo-contributors-user');
       });
    });
 
@@ -380,10 +407,11 @@ describe('GitHubInspectOrgs', () =>
          // Delete any variable data.
          s_STRIP_VARIABLE_DATA(data.normalized);
 
-         const jsonText = fs.readFileSync(
-          './test/fixture/github-get-org-repo-contributors-user-with-files.json', 'utf-8');
+         // Unless generating test data the body of s_DATA_WRITE is not executed.
+         s_DATA_WRITE(data.normalized, 'github-get-org-repo-contributors-user-with-files');
 
-         assert(JSON.stringify(data.normalized) === jsonText);
+         // Usually data is being tested.
+         s_DATA_TEST(data.normalized, 'github-get-org-repo-contributors-user-with-files');
       });
    });
 
@@ -485,9 +513,11 @@ describe('GitHubInspectOrgs', () =>
          // Delete any variable data.
          s_STRIP_VARIABLE_DATA(data.normalized);
 
-         const jsonText = fs.readFileSync('./test/fixture/github-get-org-repos-all.json', 'utf-8');
+         // Unless generating test data the body of s_DATA_WRITE is not executed.
+         s_DATA_WRITE(data.normalized, 'github-get-org-repos-all');
 
-         assert(JSON.stringify(data.normalized) === jsonText);
+         // Usually data is being tested.
+         s_DATA_TEST(data.normalized, 'github-get-org-repos-all');
       });
    });
 
@@ -505,9 +535,11 @@ describe('GitHubInspectOrgs', () =>
          // Delete any variable data.
          s_STRIP_VARIABLE_DATA(data.normalized);
 
-         const jsonText = fs.readFileSync('./test/fixture/github-get-org-repos-all-with-files.json', 'utf-8');
+         // Unless generating test data the body of s_DATA_WRITE is not executed.
+         s_DATA_WRITE(data.normalized, 'github-get-org-repos-all-with-files');
 
-         assert(JSON.stringify(data.normalized) === jsonText);
+         // Usually data is being tested.
+         s_DATA_TEST(data.normalized, 'github-get-org-repos-all-with-files');
       });
    });
 
@@ -525,9 +557,11 @@ describe('GitHubInspectOrgs', () =>
          // Delete any variable data.
          s_STRIP_VARIABLE_DATA(data.normalized);
 
-         const jsonText = fs.readFileSync('./test/fixture/github-get-org-repos-user.json', 'utf-8');
+         // Unless generating test data the body of s_DATA_WRITE is not executed.
+         s_DATA_WRITE(data.normalized, 'github-get-org-repos-user');
 
-         assert(JSON.stringify(data.normalized) === jsonText);
+         // Usually data is being tested.
+         s_DATA_TEST(data.normalized, 'github-get-org-repos-user');
       });
    });
 
@@ -545,9 +579,11 @@ describe('GitHubInspectOrgs', () =>
          // Delete any variable data.
          s_STRIP_VARIABLE_DATA(data.normalized);
 
-         const jsonText = fs.readFileSync('./test/fixture/github-get-org-repos-user-with-files.json', 'utf-8');
+         // Unless generating test data the body of s_DATA_WRITE is not executed.
+         s_DATA_WRITE(data.normalized, 'github-get-org-repos-user-with-files');
 
-         assert(JSON.stringify(data.normalized) === jsonText);
+         // Usually data is being tested.
+         s_DATA_TEST(data.normalized, 'github-get-org-repos-user-with-files');
       });
    });
 
@@ -565,9 +601,11 @@ describe('GitHubInspectOrgs', () =>
          // Delete any variable data.
          s_STRIP_VARIABLE_DATA(data.normalized);
 
-         const jsonText = fs.readFileSync('./test/fixture/github-get-org-team-members-all.json', 'utf-8');
+         // Unless generating test data the body of s_DATA_WRITE is not executed.
+         s_DATA_WRITE(data.normalized, 'github-get-org-team-members-all');
 
-         assert(JSON.stringify(data.normalized) === jsonText);
+         // Usually data is being tested.
+         s_DATA_TEST(data.normalized, 'github-get-org-team-members-all');
       });
    });
 
@@ -585,9 +623,11 @@ describe('GitHubInspectOrgs', () =>
          // Delete any variable data.
          s_STRIP_VARIABLE_DATA(data.normalized);
 
-         const jsonText = fs.readFileSync('./test/fixture/github-get-org-team-members-user.json', 'utf-8');
+         // Unless generating test data the body of s_DATA_WRITE is not executed.
+         s_DATA_WRITE(data.normalized, 'github-get-org-team-members-user');
 
-         assert(JSON.stringify(data.normalized) === jsonText);
+         // Usually data is being tested.
+         s_DATA_TEST(data.normalized, 'github-get-org-team-members-user');
       });
    });
 
@@ -605,9 +645,11 @@ describe('GitHubInspectOrgs', () =>
          // Delete any variable data.
          s_STRIP_VARIABLE_DATA(data.normalized);
 
-         const jsonText = fs.readFileSync('./test/fixture/github-get-org-teams-all.json', 'utf-8');
+         // Unless generating test data the body of s_DATA_WRITE is not executed.
+         s_DATA_WRITE(data.normalized, 'github-get-org-teams-all');
 
-         assert(JSON.stringify(data.normalized) === jsonText);
+         // Usually data is being tested.
+         s_DATA_TEST(data.normalized, 'github-get-org-teams-all');
       });
    });
 
@@ -625,9 +667,11 @@ describe('GitHubInspectOrgs', () =>
          // Delete any variable data.
          s_STRIP_VARIABLE_DATA(data.normalized);
 
-         const jsonText = fs.readFileSync('./test/fixture/github-get-org-teams-user.json', 'utf-8');
+         // Unless generating test data the body of s_DATA_WRITE is not executed.
+         s_DATA_WRITE(data.normalized, 'github-get-org-teams-user');
 
-         assert(JSON.stringify(data.normalized) === jsonText);
+         // Usually data is being tested.
+         s_DATA_TEST(data.normalized, 'github-get-org-teams-user');
       });
    });
 
@@ -645,9 +689,11 @@ describe('GitHubInspectOrgs', () =>
          // Delete any variable data.
          s_STRIP_VARIABLE_DATA(data.normalized);
 
-         const jsonText = fs.readFileSync('./test/fixture/github-get-orgs-all.json', 'utf-8');
+         // Unless generating test data the body of s_DATA_WRITE is not executed.
+         s_DATA_WRITE(data.normalized, 'github-get-orgs-all');
 
-         assert(JSON.stringify(data.normalized) === jsonText);
+         // Usually data is being tested.
+         s_DATA_TEST(data.normalized, 'github-get-orgs-all');
       });
    });
 
@@ -665,9 +711,11 @@ describe('GitHubInspectOrgs', () =>
          // Delete any variable data.
          s_STRIP_VARIABLE_DATA(data.normalized);
 
-         const jsonText = fs.readFileSync('./test/fixture/github-get-orgs-user.json', 'utf-8');
+         // Unless generating test data the body of s_DATA_WRITE is not executed.
+         s_DATA_WRITE(data.normalized, 'github-get-orgs-user');
 
-         assert(JSON.stringify(data.normalized) === jsonText);
+         // Usually data is being tested.
+         s_DATA_TEST(data.normalized, 'github-get-orgs-user');
       });
    });
 
@@ -685,9 +733,11 @@ describe('GitHubInspectOrgs', () =>
          // Delete any variable data.
          s_STRIP_VARIABLE_DATA(data.normalized);
 
-         const jsonText = fs.readFileSync('./test/fixture/github-get-owner-orgs.json', 'utf-8');
+         // Unless generating test data the body of s_DATA_WRITE is not executed.
+         s_DATA_WRITE(data.normalized, 'github-get-owner-orgs');
 
-         assert(JSON.stringify(data.normalized) === jsonText);
+         // Usually data is being tested.
+         s_DATA_TEST(data.normalized, 'github-get-owner-orgs');
       });
    });
 
@@ -705,9 +755,11 @@ describe('GitHubInspectOrgs', () =>
          // Delete any variable data.
          s_STRIP_VARIABLE_DATA(data.normalized);
 
-         const jsonText = fs.readFileSync('./test/fixture/github-get-owners.json', 'utf-8');
+         // Unless generating test data the body of s_DATA_WRITE is not executed.
+         s_DATA_WRITE(data.normalized, 'github-get-owners');
 
-         assert(JSON.stringify(data.normalized) === jsonText);
+         // Usually data is being tested.
+         s_DATA_TEST(data.normalized, 'github-get-owners');
       });
    });
 
@@ -725,9 +777,11 @@ describe('GitHubInspectOrgs', () =>
          // Delete any variable data.
          s_STRIP_VARIABLE_DATA(data.normalized);
 
-         const jsonText = fs.readFileSync('./test/fixture/github-get-owners-rate-limit.json', 'utf-8');
+         // Unless generating test data the body of s_DATA_WRITE is not executed.
+         s_DATA_WRITE(data.normalized, 'github-get-owners-rate-limit');
 
-         assert(JSON.stringify(data.normalized) === jsonText);
+         // Usually data is being tested.
+         s_DATA_TEST(data.normalized, 'github-get-owners-rate-limit');
       });
    });
 
@@ -745,9 +799,11 @@ describe('GitHubInspectOrgs', () =>
          // Delete any variable data.
          s_STRIP_VARIABLE_DATA(data.normalized);
 
-         const jsonText = fs.readFileSync('./test/fixture/github-get-user-from-credential.json', 'utf-8');
+         // Unless generating test data the body of s_DATA_WRITE is not executed.
+         s_DATA_WRITE(data.normalized, 'github-get-user-from-credential');
 
-         assert(JSON.stringify(data.normalized) === jsonText);
+         // Usually data is being tested.
+         s_DATA_TEST(data.normalized, 'github-get-user-from-credential');
       });
    });
 
@@ -762,6 +818,53 @@ describe('GitHubInspectOrgs', () =>
       });
    });
 });
+
+// Module private ---------------------------------------------------------------------------------------------------
+
+/**
+ * Always true; enabling testing of data in `./test/fixture`.
+ * @type {boolean}
+ */
+const s_TEST_DATA = true;
+
+/**
+ * Usually false; generates test data written to `./test/fixture`.
+ * @type {boolean}
+ */
+const s_WRITE_DATA = false;
+
+/**
+ * Tests all permutations for the given filePrefix. Iterates through `s_FILE_DATA` and compares all results.
+ *
+ * @param {object}   data - The normalized data output from `GitHubInspectOrgsTransform`.
+ * @param {string}   fileName - A file name for the test being run.
+ */
+const s_DATA_TEST = (data, fileName) =>
+{
+   if (s_TEST_DATA)
+   {
+      const filePath = `./test/fixture/${fileName}.json`;
+      const testData = fs.readFileSync(filePath, 'utf-8');
+
+      assert(JSON.stringify(data) === testData);
+   }
+};
+
+/**
+ * Iterates over `s_FILE_DATA` writing out comparison data to `./test/fixture`.
+ *
+ * @param {object}   data - The normalized data output from `GitHubInspectOrgsTransform`.
+ * @param {string}   fileName - A file name for the test being run.
+ */
+const s_DATA_WRITE = (data, fileName) =>
+{
+   if (s_WRITE_DATA)
+   {
+      const filePath = `./test/fixture/${fileName}.json`;
+
+      fs.writeFileSync(filePath, JSON.stringify(data), 'utf-8');
+   }
+};
 
 /**
  * Strips variable data entries that may change from the normalized data returned from GitHubInspectOrgs.
