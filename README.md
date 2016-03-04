@@ -80,7 +80,7 @@ The normalized data contains a few base fields including:
 The remaining base fields include one or more array of array structures depending on the requested data. Please
 review the documentation for each method provided for an example JSON response.
 
-All methods take a hash of optional parameters. The two optional parameters that are supported include:
+Most methods take a hash of optional parameters. The three optional parameters that are supported include:
 ```
 (string)          credential - A public access token with `public_repo` and `read:org` permissions for any GitHub
                                user which limits the responses to the organizations and other query data that this
