@@ -120,6 +120,7 @@ GitHubInspectOrgs method summary:
 - [getOrgRepoContributors](#getOrgRepoContributors) - Returns all contributors by repo by organization across all organizations.
 - [getOrgRepoStats](#getOrgRepoStats) - Returns GitHub statistics by repo by organization across all organizations.
 - [getOrgs](#getOrgs) - Returns all organizations.
+- [getOrgTeamMembers](#getOrgTeamMembers) - Returns all members by team by organization across all organizations.
 - [getOrgTeams](#getOrgTeams) - Returns all teams by organization across all organizations.
 - [getOwnerOrgs](#getOwnerOrgs) - Returns all organizations by organization owner.
 - [getOwnerRateLimits](#getOwnerRateLimits) - Returns the current rate limits for all organization owners.
