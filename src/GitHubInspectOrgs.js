@@ -1983,6 +1983,7 @@ const s_CREATE_CREDENTIALS = (tokenOrPass) =>
       const splitIndex = tokenOrPass.indexOf(':');
 
       // Treat as username:password if tokenOrPass includes `:`.
+      /* istanbul ignore if */
       if (splitIndex >= 0)
       {
          const partials = tokenOrPass.split(':', 2);
@@ -2387,6 +2388,7 @@ const s_GET_ORGS_AUTH = (githubInspect, options = {}) =>
       {
          githubInspect.getUserFromCredential(options).then((user) =>
          {
+            /* istanbul ignore if */
             if (user === null)
             {
                reject('s_GET_ORGS_AUTH error: user authentication failed.');
@@ -2489,10 +2491,12 @@ const s_IS_RATE_LIMIT_REACHED = (githubInspect, options = {}) =>
                       res.resources.core.remaining)
                      {
                         const remaining = res.resources.core.remaining;
+
+                        /* istanbul ignore if */
                         if (remaining <= 0)
                         {
-                           reject(`GitHub API rate limit reached for organization owner: '${organization.owner}
-                               '; please try again at: '${new Date(res.resources.core.reset * 1000)}.`);
+                           reject(`GitHub API rate limit reached for organization owner: '${organization.owner}`
+                            + `'; please try again at: '${new Date(res.resources.core.reset * 1000)}.`);
                         }
                      }
 
