@@ -3,7 +3,7 @@
 npm-debug.log
 token.owner
 token.user
-coverage
-dist
-docs
-node_modules
+coverage/
+dist/
+docs/
+node_modules/

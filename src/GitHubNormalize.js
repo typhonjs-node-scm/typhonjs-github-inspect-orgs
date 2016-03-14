@@ -15,15 +15,18 @@ export default class GitHubNormalize
     *
     * @returns {{}}
     */
-   normalizeCategories(categories, raw, options = {})
+   static normalizeCategories(categories, raw, options = {})
    {
+      /* istanbul ignore if */
       if (!Array.isArray(categories))
       {
          throw new TypeError(`normalizeCategories error: 'categories' is not an 'array'.`);
       }
 
+      /* istanbul ignore if */
       if (typeof raw !== 'object') { throw new TypeError(`normalizeCategories error: 'raw' is not an 'object'.`); }
 
+      /* istanbul ignore if */
       if (typeof options !== 'object')
       {
          throw new TypeError(`normalizeCategories error: 'options' is not an 'object'.`);
@@ -56,7 +59,7 @@ export default class GitHubNormalize
     * ```
     * @returns {function}
     */
-   getNormalizedFunction(category)
+   static getNormalizedFunction(category)
    {
       return s_GET_NORMALIZE_FUNCTION(category);
    }
@@ -109,7 +112,7 @@ const s_GET_NORMALIZE_FUNCTION = (category) =>
 {
    let normalizeFunction;
 
-   switch(category)
+   switch (category)
    {
       case 'authors':
       case 'collaborators':
@@ -143,6 +146,7 @@ const s_GET_NORMALIZE_FUNCTION = (category) =>
          normalizeFunction = s_NORMALIZE_TEAM;
          break;
 
+      /* istanbul ignore next */
       default:
          throw new Error(`Unknown category: ${category}`);
    }

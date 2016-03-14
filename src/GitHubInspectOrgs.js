@@ -5,8 +5,6 @@ import request          from 'request';
 
 import GitHubNormalize  from './GitHubNormalize.js';
 
-const s_GITHUB_NORMALIZE = new GitHubNormalize();
-
 /**
  * GitHubInspectOrgs -- A NPM module providing compound GitHub queries spanning multiple organizations /
  * users for many-repo projects such as TyphonJS. To support a many-repo / many-organization effort that may span one
@@ -137,11 +135,13 @@ export default class GitHubInspectOrgs
     */
    constructor(options = {})
    {
+      /* istanbul ignore if */
       if (typeof options !== 'object')
       {
          throw new TypeError(`ctor error: 'options' is not an 'object'.`);
       }
 
+      /* istanbul ignore if */
       if (!Array.isArray(options.organizations))
       {
          throw new TypeError(`ctor error: 'options.organizations' is not an 'array'.`);
@@ -168,11 +168,13 @@ export default class GitHubInspectOrgs
          const organization = options.organizations[cntr];
          const verifiedOrg = {};
 
+         /* istanbul ignore if */
          if (typeof organization !== 'object')
          {
             throw new TypeError(`ctor error: 'options.organizations' is not an 'object' at index: ${cntr}`);
          }
 
+         /* istanbul ignore if */
          if (typeof organization.credential !== 'string')
          {
             throw new TypeError(`ctor error: 'options.organizations.credential' is not a 'string' at index: ${cntr}`);
@@ -180,6 +182,7 @@ export default class GitHubInspectOrgs
 
          verifiedOrg.credential = s_CREATE_CREDENTIALS(organization.credential);
 
+         /* istanbul ignore if */
          if (typeof organization.owner !== 'string')
          {
             throw new TypeError(`ctor error: 'options.organizations.owner' is not a 'string' at index: ${cntr}`);
@@ -187,16 +190,18 @@ export default class GitHubInspectOrgs
 
          verifiedOrg.owner = organization.owner;
 
+         /* istanbul ignore if */
          if (typeof organization.regex !== 'string')
          {
             throw new TypeError(`ctor error: 'options.organizations.regex' is not a 'string' at index: ${cntr}`);
          }
 
+         /* istanbul ignore next */
          try
          {
             verifiedOrg.regex = new RegExp(organization.regex);
          }
-         catch(err)
+         catch (err)
          {
             throw new Error(`ctor error: 'options.organizations.regex' is not a valid 'regex' at index: ${cntr}`);
          }
@@ -284,6 +289,7 @@ export default class GitHubInspectOrgs
     */
    getCollaborators(options = {})
    {
+      /* istanbul ignore if */
       if (typeof options !== 'object') { throw new TypeError(`getCollaborators error: 'options' is not an 'object'.`); }
 
       // Prevents nested queries from generating intermediate normalized data.
@@ -328,7 +334,7 @@ export default class GitHubInspectOrgs
             // Sort by org name.
             collaborators.sort((a, b) => { return a.login.localeCompare(b.login); });
 
-            return { normalized: s_GITHUB_NORMALIZE.normalizeCategories(['collaborators'], collaborators,
+            return { normalized: GitHubNormalize.normalizeCategories(['collaborators'], collaborators,
              this._optionsURL), raw: collaborators };
          });
       });
@@ -368,6 +374,7 @@ export default class GitHubInspectOrgs
     */
    getContributors(options = {})
    {
+      /* istanbul ignore if */
       if (typeof options !== 'object') { throw new TypeError(`getContributors error: 'options' is not an 'object'.`); }
 
       // Prevents nested queries from generating intermediate normalized data.
@@ -413,7 +420,7 @@ export default class GitHubInspectOrgs
             // Sort by user name.
             contributors.sort((a, b) => { return a.login.localeCompare(b.login); });
 
-            return { normalized: s_GITHUB_NORMALIZE.normalizeCategories(['contributors'], contributors,
+            return { normalized: GitHubNormalize.normalizeCategories(['contributors'], contributors,
              this._optionsURL), raw: contributors };
          });
       });
@@ -453,6 +460,7 @@ export default class GitHubInspectOrgs
     */
    getMembers(options = {})
    {
+      /* istanbul ignore if */
       if (typeof options !== 'object') { throw new TypeError(`getMembers error: 'options' is not an 'object'.`); }
 
       // Prevents nested queries from generating intermediate normalized data.
@@ -490,7 +498,7 @@ export default class GitHubInspectOrgs
             // Sort by user name.
             members.sort((a, b) => { return a.login.localeCompare(b.login); });
 
-            return { normalized: s_GITHUB_NORMALIZE.normalizeCategories(['members'], members, this._optionsURL),
+            return { normalized: GitHubNormalize.normalizeCategories(['members'], members, this._optionsURL),
              raw: members };
          });
       });
@@ -540,6 +548,7 @@ export default class GitHubInspectOrgs
     */
    getOrgMembers(options = {})
    {
+      /* istanbul ignore if */
       if (typeof options !== 'object') { throw new TypeError(`getOrgMembers error: 'options' is not an 'object'.`); }
 
       // If no explicit option to create normalized data is available default to true.
@@ -571,6 +580,7 @@ export default class GitHubInspectOrgs
 
                      github.orgs.getMembers({ org: org.login }, (err, members) =>
                      {
+                        /* istanbul ignore if */
                         if (err)
                         {
                            if (verbose)
@@ -598,7 +608,7 @@ export default class GitHubInspectOrgs
                // Strip any temporary private data stored in `orgs` when returning normalized data.
                if (normalize) { s_STRIP_PRIVATE_ORGS_DATA(orgs); }
 
-               return normalize ? { normalized: s_GITHUB_NORMALIZE.normalizeCategories(['orgs', 'members'], orgs,
+               return normalize ? { normalized: GitHubNormalize.normalizeCategories(['orgs', 'members'], orgs,
                 this._optionsURL), raw: orgs } : orgs;
             });
          });
@@ -667,6 +677,7 @@ export default class GitHubInspectOrgs
     */
    getOrgRepos(options = {})
    {
+      /* istanbul ignore if */
       if (typeof options !== 'object') { throw new TypeError(`getOrgRepos error: 'options' is not an 'object'.`); }
 
       // If no explicit option to create normalized data is available default to true.
@@ -704,6 +715,7 @@ export default class GitHubInspectOrgs
 
                      github.repos.getFromOrg({ org: org.login }, (err, repos) =>
                      {
+                        /* istanbul ignore if */
                         if (err)
                         {
                            if (verbose)
@@ -737,7 +749,7 @@ export default class GitHubInspectOrgs
                   // Strip any temporary private data stored in `orgs` when returning normalized data.
                   if (normalize) { s_STRIP_PRIVATE_ORGS_DATA(orgs); }
 
-                  return normalize ? { normalized: s_GITHUB_NORMALIZE.normalizeCategories(['orgs', 'repos'], orgs,
+                  return normalize ? { normalized: GitHubNormalize.normalizeCategories(['orgs', 'repos'], orgs,
                    optionsURL), raw: orgs } : orgs;
                });
             });
@@ -816,6 +828,7 @@ export default class GitHubInspectOrgs
     */
    getOrgRepoCollaborators(options = {})
    {
+      /* istanbul ignore if */
       if (typeof options !== 'object')
       {
          throw new TypeError(`getOrgRepoCollaborators error: 'options' is not an 'object'.`);
@@ -854,6 +867,7 @@ export default class GitHubInspectOrgs
 
                         github.repos.getCollaborators({ repo: repo.name, user: org.login }, (err, users) =>
                         {
+                           /* istanbul ignore if */
                            if (err)
                            {
                               if (verbose)
@@ -883,7 +897,7 @@ export default class GitHubInspectOrgs
                // Strip any temporary private data stored in `orgs` when returning normalized data.
                if (normalize) { s_STRIP_PRIVATE_ORGS_DATA(orgs); }
 
-               return normalize ? { normalized: s_GITHUB_NORMALIZE.normalizeCategories(
+               return normalize ? { normalized: GitHubNormalize.normalizeCategories(
                 ['orgs', 'repos', 'collaborators'], orgs, this._optionsURL), raw: orgs } : orgs;
             });
          });
@@ -961,6 +975,7 @@ export default class GitHubInspectOrgs
     */
    getOrgRepoContributors(options = {})
    {
+      /* istanbul ignore if */
       if (typeof options !== 'object')
       {
          throw new TypeError(`getOrgRepoContributors error: 'options' is not an 'object'.`);
@@ -997,6 +1012,7 @@ export default class GitHubInspectOrgs
 
                         github.repos.getContributors({ repo: repo.name, user: org.login }, (err, users) =>
                         {
+                           /* istanbul ignore if */
                            if (err)
                            {
                               resolve(err);
@@ -1020,7 +1036,7 @@ export default class GitHubInspectOrgs
                // Strip any temporary private data stored in `orgs` when returning normalized data.
                if (normalize) { s_STRIP_PRIVATE_ORGS_DATA(orgs); }
 
-               return normalize ? { normalized: s_GITHUB_NORMALIZE.normalizeCategories(
+               return normalize ? { normalized: GitHubNormalize.normalizeCategories(
                 ['orgs', 'repos', 'contributors'], orgs, this._optionsURL), raw: orgs } : orgs;
             });
          });
@@ -1177,10 +1193,12 @@ export default class GitHubInspectOrgs
     */
    getOrgRepoStats(options = {})
    {
+      /* istanbul ignore if */
       if (typeof options !== 'object') { throw new TypeError(`getOrgRepoStats error: 'options' is not an 'object'.`); }
 
       let categories = options.categories || [];
 
+      /* istanbul ignore if */
       if (!Array.isArray(categories))
       {
          throw new TypeError(`getOrgRepoStats error: 'options.categories' is not an 'array'.`);
@@ -1223,6 +1241,7 @@ export default class GitHubInspectOrgs
                   {
                      const category = categories[cntr3];
 
+                     /* istanbul ignore else */
                      if (typeof s_STAT_CATEGORY_TO_FUNCT[category] === 'string')
                      {
                         (function(org, repo, category, functionName)
@@ -1233,6 +1252,7 @@ export default class GitHubInspectOrgs
 
                               github.repos[functionName]({ repo: repo.name, user: org.login }, (err, results) =>
                               {
+                                 /* istanbul ignore if */
                                  if (err)
                                  {
                                     reject(err);
@@ -1262,7 +1282,7 @@ export default class GitHubInspectOrgs
                // Strip any temporary private data stored in `orgs` when returning normalized data.
                if (normalize) { s_STRIP_PRIVATE_ORGS_DATA(orgs); }
 
-               return normalize ? { normalized: s_GITHUB_NORMALIZE.normalizeCategories(['orgs', 'repos', 'stats'],
+               return normalize ? { normalized: GitHubNormalize.normalizeCategories(['orgs', 'repos', 'stats'],
                 orgs, this._optionsURL), raw: orgs } : orgs;
             });
          });
@@ -1304,6 +1324,7 @@ export default class GitHubInspectOrgs
     */
    getOrgs(options = {})
    {
+      /* istanbul ignore if */
       if (typeof options !== 'object') { throw new TypeError(`getOrgs error: 'options' is not an 'object'.`); }
 
       // If no explicit option to create normalized data is available default to true.
@@ -1334,6 +1355,7 @@ export default class GitHubInspectOrgs
 
                   github.orgs.getFromUser({ user: organization.owner }, (err, orgs) =>
                   {
+                     /* istanbul ignore if */
                      if (err)
                      {
                         if (verbose)
@@ -1374,7 +1396,7 @@ export default class GitHubInspectOrgs
             // Strip any temporary private data stored in `orgs` when returning normalized data.
             if (normalize) { s_STRIP_PRIVATE_ORGS_DATA(results); }
 
-            return normalize ? { normalized: s_GITHUB_NORMALIZE.normalizeCategories(['orgs'], results,
+            return normalize ? { normalized: GitHubNormalize.normalizeCategories(['orgs'], results,
              this._optionsURL), raw: results } : results;
          });
       });
@@ -1425,6 +1447,7 @@ export default class GitHubInspectOrgs
     */
    getOrgTeams(options = {})
    {
+      /* istanbul ignore if */
       if (typeof options !== 'object') { throw new TypeError(`getOrgTeams error: 'options' is not an 'object'.`); }
 
       // If no explicit option to create normalized data is available default to true.
@@ -1459,6 +1482,7 @@ export default class GitHubInspectOrgs
 
                      github.orgs.getTeams({ org: org.login }, (err, result) =>
                      {
+                        /* istanbul ignore if */
                         if (err)
                         {
                            if (verbose)
@@ -1493,7 +1517,7 @@ export default class GitHubInspectOrgs
                // Strip any temporary private data stored in `orgs` when returning normalized data.
                if (normalize) { s_STRIP_PRIVATE_ORGS_DATA(orgs); }
 
-               return normalize ? { normalized: s_GITHUB_NORMALIZE.normalizeCategories(['orgs', 'teams'], orgs,
+               return normalize ? { normalized: GitHubNormalize.normalizeCategories(['orgs', 'teams'], orgs,
                 this._optionsURL), raw: orgs } : orgs;
             });
          });
@@ -1554,6 +1578,7 @@ export default class GitHubInspectOrgs
     */
    getOrgTeamMembers(options = {})
    {
+      /* istanbul ignore if */
       if (typeof options !== 'object')
       {
          throw new TypeError(`getOrgTeamMembers error: 'options' is not an 'object'.`);
@@ -1592,6 +1617,7 @@ export default class GitHubInspectOrgs
 
                            github.orgs.getTeamMembers({ id: team.id }, (err, members) =>
                            {
+                              /* istanbul ignore if */
                               if (err) { /* ... */ }
                               else
                               {
@@ -1610,7 +1636,7 @@ export default class GitHubInspectOrgs
                // Strip any temporary private data stored in `orgs` when returning normalized data.
                if (normalize) { s_STRIP_PRIVATE_ORGS_DATA(orgs); }
 
-               return normalize ? { normalized: s_GITHUB_NORMALIZE.normalizeCategories(['orgs', 'teams', 'members'],
+               return normalize ? { normalized: GitHubNormalize.normalizeCategories(['orgs', 'teams', 'members'],
                 orgs, this._optionsURL), raw: orgs } : orgs;
             });
          });
@@ -1670,6 +1696,7 @@ export default class GitHubInspectOrgs
 
                   github.orgs.getFromUser({ user: organization.owner }, (err, orgs) =>
                   {
+                     /* istanbul ignore if */
                      if (err) { resolve(err); }
                      else
                      {
@@ -1706,7 +1733,7 @@ export default class GitHubInspectOrgs
             // Sort by owner name.
             owners.sort((a, b) => { return a.owner.localeCompare(b.owner); });
 
-            return { normalized: s_GITHUB_NORMALIZE.normalizeCategories(['owners', 'orgs'], owners, this._optionsURL),
+            return { normalized: GitHubNormalize.normalizeCategories(['owners', 'orgs'], owners, this._optionsURL),
              raw: owners };
          });
       });
@@ -1766,6 +1793,7 @@ export default class GitHubInspectOrgs
 
                github.misc.rateLimit({}, (err, result) =>
                {
+                  /* istanbul ignore if */
                   if (err)
                   {
                      reject(err);
@@ -1785,7 +1813,7 @@ export default class GitHubInspectOrgs
          // Sort by owner name.
          owners.sort((a, b) => { return a.owner.localeCompare(b.owner); });
 
-         return { normalized: s_GITHUB_NORMALIZE.normalizeCategories(['owners', 'ratelimit'], owners, this._optionsURL),
+         return { normalized: GitHubNormalize.normalizeCategories(['owners', 'ratelimit'], owners, this._optionsURL),
           raw: owners };
       });
    }
@@ -1813,7 +1841,7 @@ export default class GitHubInspectOrgs
     */
    getOwners()
    {
-      const normalized = s_GITHUB_NORMALIZE.normalizeCategories(['owners'], this._organizations, this._optionsURL);
+      const normalized = GitHubNormalize.normalizeCategories(['owners'], this._organizations, this._optionsURL);
 
       normalized.owners.sort((a, b) => { return a.name.localeCompare(b.name); });
 
@@ -1833,11 +1861,13 @@ export default class GitHubInspectOrgs
     */
    getUserFromCredential(options = {})
    {
+      /* istanbul ignore if */
       if (typeof options !== 'object')
       {
          throw new TypeError(`getUserFromCredential error: 'options' is not an 'object'.`);
       }
 
+      /* istanbul ignore if */
       if (typeof options.credential !== 'string')
       {
          throw new TypeError(`getUserFromCredential error: 'options.credential' is not a 'string'.`);
@@ -1852,10 +1882,11 @@ export default class GitHubInspectOrgs
 
          github.user.get({}, (err, user) =>
          {
+            /* istanbul ignore if */
             if (err) { resolve(null); }
             else
             {
-               resolve(normalize ? { normalized: s_GITHUB_NORMALIZE.normalizeCategories(['users'], [user]),
+               resolve(normalize ? { normalized: GitHubNormalize.normalizeCategories(['users'], [user]),
                 raw: user } : user);
             }
          });
@@ -1873,16 +1904,19 @@ export default class GitHubInspectOrgs
     */
    getUserOwnsCredential(options = {})
    {
+      /* istanbul ignore if */
       if (typeof options !== 'object')
       {
          throw new TypeError(`getUserOwnsCredential error: 'options' is not an 'object'.`);
       }
 
+      /* istanbul ignore if */
       if (typeof options.userName !== 'string')
       {
          throw new TypeError(`getUserOwnsCredential error: 'options.userName' is not a 'string'.`);
       }
 
+      /* istanbul ignore if */
       if (typeof options.credential !== 'string')
       {
          throw new TypeError(`getUserOwnsCredential error: 'options.credential' is not a 'string'.`);
@@ -1940,8 +1974,10 @@ const s_CREATE_CREDENTIALS = (tokenOrPass) =>
    let credential;
 
    // Create credentials object hash
+   /* istanbul ignore else */
    if (typeof tokenOrPass === 'string')
    {
+      /* istanbul ignore if */
       if (tokenOrPass === '') { throw new TypeError(`s_CREATE_CREDENTIALS error: 'tokenOrPass' is an empty string.`); }
 
       const splitIndex = tokenOrPass.indexOf(':');
@@ -1967,6 +2003,7 @@ const s_CREATE_CREDENTIALS = (tokenOrPass) =>
    }
 
    // Perform validation of the created credential.
+   /* istanbul ignore if */
    if (typeof credential !== 'object')
    {
       throw new TypeError(
@@ -1974,13 +2011,16 @@ const s_CREATE_CREDENTIALS = (tokenOrPass) =>
    }
    else
    {
+      /* istanbul ignore else */
       if (credential.type === 'basic')
       {
+         /* istanbul ignore if */
          if (typeof credential.username === 'undefined' || credential.password === null || credential.username === '')
          {
             throw new TypeError(`s_CREATE_CREDENTIALS error: 'credential.username' is undefined or empty.`);
          }
 
+         /* istanbul ignore if */
          if (typeof credential.password === 'undefined' || credential.password === null || credential.password === '')
          {
             throw new TypeError(`s_CREATE_CREDENTIALS error: 'credential.password' is undefined or empty.`);
@@ -1988,6 +2028,7 @@ const s_CREATE_CREDENTIALS = (tokenOrPass) =>
       }
       else if (credential.type === 'oauth')
       {
+         /* istanbul ignore if */
          if (typeof credential.token === 'undefined' || credential.token === null || credential.token === '')
          {
             throw new TypeError(`s_CREATE_CREDENTIALS error: 'credential.username' is undefined or empty.`);
@@ -2018,11 +2059,13 @@ const s_CREATE_CREDENTIALS = (tokenOrPass) =>
  */
 const s_CREATE_REPO_FILE_PROMISES = (userAgent, promises, repos, options = {}, optionsURL = {}) =>
 {
+   /* istanbul ignore if */
    if (typeof options !== 'object')
    {
       throw new TypeError(`s_CREATE_REPO_FILE_PROMISES error: 'options' is not an 'object'.`);
    }
 
+   /* istanbul ignore if */
    if (typeof optionsURL !== 'object')
    {
       throw new TypeError(`s_CREATE_REPO_FILE_PROMISES error: 'optionsURL' is not an 'object'.`);
@@ -2031,21 +2074,25 @@ const s_CREATE_REPO_FILE_PROMISES = (userAgent, promises, repos, options = {}, o
    // If there are no files to process exit early.
    if (typeof options.repoFiles === 'undefined') { return; }
 
+   /* istanbul ignore if */
    if (typeof userAgent !== 'object')
    {
       throw new TypeError(`s_CREATE_REPO_FILE_PROMISES error: 'userAgent' is not an 'object'.`);
    }
 
+   /* istanbul ignore if */
    if (!Array.isArray(promises))
    {
       throw new TypeError(`s_CREATE_REPO_FILE_PROMISES error: 'promises' is not an 'array'.`);
    }
 
+   /* istanbul ignore if */
    if (!Array.isArray(repos))
    {
       throw new TypeError(`s_CREATE_REPO_FILE_PROMISES error: 'repos' is not an 'array'.`);
    }
 
+   /* istanbul ignore if */
    if (!Array.isArray(options.repoFiles))
    {
       throw new TypeError(`s_CREATE_REPO_FILE_PROMISES error: 'options.repoFiles' is not an 'array'.`);
@@ -2093,11 +2140,13 @@ const s_CREATE_REPO_FILE_PROMISES = (userAgent, promises, repos, options = {}, o
  */
 const s_GET_ORG_REPOS_AUTH = (githubInspect, options = {}) =>
 {
+   /* istanbul ignore if */
    if (typeof options !== 'object')
    {
       throw new TypeError(`s_GET_ORG_REPOS_AUTH error: 'options' is not an 'object'.`);
    }
 
+   /* istanbul ignore if */
    if (typeof options.credential !== 'string')
    {
       throw new TypeError(`s_GET_ORG_REPOS_AUTH error: 'options.credential' is required or is not a 'string'.`);
@@ -2137,6 +2186,7 @@ const s_GET_ORG_REPOS_AUTH = (githubInspect, options = {}) =>
 
                      github.orgs.getTeamRepos({ org: org.login, id: team.id }, (err, repos) =>
                      {
+                        /* istanbul ignore if */
                         if (err)
                         {
                            if (verbose)
@@ -2185,7 +2235,7 @@ const s_GET_ORG_REPOS_AUTH = (githubInspect, options = {}) =>
                // Strip any temporary private data stored in `orgs` when returning normalized data.
                if (normalize) { s_STRIP_PRIVATE_ORGS_DATA(orgs); }
 
-               return normalize ? { normalized: s_GITHUB_NORMALIZE.normalizeCategories(['orgs', 'repos'], orgs,
+               return normalize ? { normalized: GitHubNormalize.normalizeCategories(['orgs', 'repos'], orgs,
                 githubInspect._optionsURL), raw: orgs } : orgs;
             });
          });
@@ -2203,6 +2253,7 @@ const s_GET_ORG_REPOS_AUTH = (githubInspect, options = {}) =>
  */
 const s_GET_ORG_TEAMS_AUTH = (githubInspect, options = {}) =>
 {
+   /* istanbul ignore if */
    if (typeof options !== 'object')
    {
       throw new TypeError(`s_GET_ORG_TEAMS_AUTH error: 'options' is not an 'object'.`);
@@ -2237,6 +2288,7 @@ const s_GET_ORG_TEAMS_AUTH = (githubInspect, options = {}) =>
 
                   github.orgs.getTeams({ org: org.login }, (err, teams) =>
                   {
+                     /* istanbul ignore if */
                      if (err)
                      {
                         if (verbose)
@@ -2266,6 +2318,7 @@ const s_GET_ORG_TEAMS_AUTH = (githubInspect, options = {}) =>
                                  },
                                  (err) =>
                                  {
+                                    /* istanbul ignore if */
                                     if (err) { /* ... */ }
                                     else { org.teams.push(team); }
                                     innerResolve();
@@ -2294,7 +2347,7 @@ const s_GET_ORG_TEAMS_AUTH = (githubInspect, options = {}) =>
                // Strip any temporary private data stored in `orgs` when returning normalized data.
                if (normalize) { s_STRIP_PRIVATE_ORGS_DATA(orgs); }
 
-               return normalize ? { normalized: s_GITHUB_NORMALIZE.normalizeCategories(['orgs', 'teams'], orgs,
+               return normalize ? { normalized: GitHubNormalize.normalizeCategories(['orgs', 'teams'], orgs,
                 githubInspect._optionsURL), raw: orgs } : orgs;
             });
          });
@@ -2312,8 +2365,10 @@ const s_GET_ORG_TEAMS_AUTH = (githubInspect, options = {}) =>
  */
 const s_GET_ORGS_AUTH = (githubInspect, options = {}) =>
 {
+   /* istanbul ignore if */
    if (typeof options !== 'object') { throw new TypeError(`s_GET_ORGS_AUTH error: 'options' is not an 'object'.`); }
 
+   /* istanbul ignore if */
    if (typeof options.credential !== 'string')
    {
       throw new TypeError(`s_GET_ORGS_AUTH error: 'options.credential' is required or is not a 'string'.`);
@@ -2378,7 +2433,7 @@ const s_GET_ORGS_AUTH = (githubInspect, options = {}) =>
                      // Strip any temporary private data stored in `orgs` when returning normalized data.
                      if (normalize) { s_STRIP_PRIVATE_ORGS_DATA(results); }
 
-                     resolve(normalize ? { normalized: s_GITHUB_NORMALIZE.normalizeCategories(['orgs'], results,
+                     resolve(normalize ? { normalized: GitHubNormalize.normalizeCategories(['orgs'], results,
                       githubInspect._optionsURL), raw: results } : results);
                   });
                });
@@ -2398,6 +2453,7 @@ const s_GET_ORGS_AUTH = (githubInspect, options = {}) =>
  */
 const s_IS_RATE_LIMIT_REACHED = (githubInspect, options = {}) =>
 {
+   /* istanbul ignore if */
    if (typeof options !== 'object')
    {
       throw new TypeError(`s_IS_RATE_LIMIT_REACHED error: 'options' is not an 'object'.`);
@@ -2425,6 +2481,7 @@ const s_IS_RATE_LIMIT_REACHED = (githubInspect, options = {}) =>
 
                github.misc.rateLimit({}, (err, res) =>
                {
+                  /* istanbul ignore if */
                   if (err) { reject(`s_IS_RATE_LIMIT_REACHED: unknown error - ${err}`); }
                   else
                   {

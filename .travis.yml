@@ -5,4 +5,4 @@ before_script:
   - npm install -g gulp
 script:
   - gulp eslint
-  - TRAVIS=1 npm run test-coverage
+  - npm run test-coverage

@@ -8,6 +8,5 @@ import gulpTasks  from 'typhonjs-core-gulptasks';
 gulpTasks(gulp,
 {
    rootPath: __dirname,
-   importTasks: ['esdoc', 'eslint', 'npm'],
    srcGlob: ['./src/**/*.js', './test/src/**/*.js']
 });
